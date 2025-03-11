@@ -1,9 +1,10 @@
 <div align="center">
-  <h1 style="color: #007bff;">Solana Co-Learning#4</h1>  
+  <h1 style="color: #007bff;">Solana Co-Learning#3</h1>  
   <p style="font-size: 1.5em;">
     <a href="https://github.com/CreatorsDAO"><img src="https://badgen.net/badge/icon/github?icon=github&label" alt="GitHub" style="margin-right: 10px;" /></a>
     <a href="https://twitter.com/Labs706"><img src="https://badgen.net/badge/icon/twitter?icon=twitter&label" alt="Twitter" /></a>
   </p>
+  <img src="./image.png" alt="GitHub" style="width: 90%;" />
 </div>
 
 ## Module 1
@@ -105,24 +106,12 @@ PDA , CPI , SPL Token
 - 创建 Token
 - mint Token
 
-### 3.2 Solana Blinks
+### 3.2 Solana 前沿
 
 Actions and Blinks
 
 🔗 [Actions and Blinks](https://solana.com/docs/advanced/actions)
 🔗 [Actions and Alerts](https://docs.dialect.to/documentation/alerts/alerts-quick-start)
-
-## Module 4
-
-### 4.1 Solana Agent
-
-Eliza 中 使用 Solana
-
-https://github.com/elizaos-plugins/plugin-solana-v2
-
-### 4.2 Solana Agent Kit
-
-https://github.com/sendaifun/solana-agent-kit
 
 ---
 
