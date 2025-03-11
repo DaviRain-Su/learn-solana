@@ -33,6 +33,8 @@ Solana Local Node、Solana CLI Tools、Network Wallet 交互
 
 🔗 [Solana Hello World](https://solana.com/zh/developers/guides/getstarted/local-rust-hello-world)
 
+🔗 [Solana Counter ](https://github.com/solana-developers/program-examples/blob/main/basics/counter/native/program/src/lib.rs)
+
 🔗 [Solana-Developers/Program-Examples](https://github.com/solana-developers/program-examples/tree/main/basics)
 
 🔗 [Solana Playground](https://beta.solpg.io/)
@@ -56,7 +58,7 @@ Account 数据传输序列化，数据检查（TypeScript SDK 基本使用）
 
 🔗 [https://solana.com/docs/clients/javascript](https://solana.com/docs/clients/javascript)
 
-🔗 [Connect Solana from React](https://solana.com/developers/cookbook/wallets/connect-wallet-react)
+🔗 [Connect Solana from React](https://github.com/anza-xyz/wallet-adapter/blob/master/APP.md)
 
 #### 学习目标:
 
@@ -71,11 +73,11 @@ Account 数据传输序列化，数据检查（TypeScript SDK 基本使用）
 
 使用 Anchor Framework 开发
 
-🔗 [Anchor Hello World](https://www.anchor-lang.com/docs/hello-world)
-
 🔗 [Intro to Anchor](https://solana.com/developers/guides/getstarted/intro-to-anchor)
 
-🔗 [More about Anchor](https://www.anchor-lang.com/docs)
+🔗 [Anchor playground ](https://www.anchor-lang.com/docs/solana-playground)
+
+🔗 [More about Anchor](https://www.anchor-lang.com/docs/account-constraints)
 
 #### 学习目标
 
@@ -123,6 +125,9 @@ https://github.com/elizaos-plugins/plugin-solana-v2
 ### 4.2 Solana Agent Kit
 
 https://github.com/sendaifun/solana-agent-kit
+
+🔗 [soldev Blinks](https://soldev.cn/wiki/blinks)
+
 
 ---
 
