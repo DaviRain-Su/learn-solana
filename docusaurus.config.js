@@ -51,7 +51,6 @@ const config = {
   url: "https://www.all-in-one-blockchain.xyz/",
   baseUrl: "/",
   onBrokenLinks: "throw",
-  //onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
 
   // GitHub pages deployment config.
