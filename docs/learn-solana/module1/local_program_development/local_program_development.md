@@ -135,6 +135,8 @@ solana config set --keypair ~/<FILE_PATH>
 
 你可以使用`solana-test-validator`命令运行本地测试验证器。该命令会创建一个持续运行的进程，需要单独的命令行窗口。
 
+> 这里不再建议使用`solana-test-validator`来启动本地测试验证器，而是选择[`surfpool`](https://surfpool.run)。 这里是他的[文档网站](https://docs.surfpool.run)，很简单实用 安装之后直接就能启动。
+
 ### Stream program logs
 
 通常在打开一个新的控制台并在测试验证器旁边运行`solana logs`命令会很有帮助。这将创建另一个持续进行的进程，用于流式传输与你配置的集群相关的日志。
