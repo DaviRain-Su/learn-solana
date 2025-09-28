@@ -7,22 +7,97 @@ tags:
   - solana
 ---
 
-# 🧬 为你的代币赋予身份
+# 🧬 为你的代币赋予身份 - 从"未知"到"明星"！
 
-现在是时候让代币与它们的创造者（也就是你）相遇了。我们将在之前构建的基础上继续前进。如果需要，你可以从[这个链接获取起始代码](https://github.com/all-in-one-solana/solana-token-client/tree/solution-without-burn)（确保你处于 `solution-without-burn` 分支）。
+## 🎯 项目目标
 
-首先，我们要添加新的依赖项：
+还记得你的代币在钱包里显示为"Unknown Token"吗？今天我们要给它一个**完整的身份**！🎭
+
+你将实现：
+- 🖼️ 上传代币图标
+- 📝 添加名称和符号
+- 🌐 创建元数据账户
+- ✨ 让代币专业起来
+
+:::tip 🌟 这一课的意义
+就像给新生儿起名字和拍照片一样重要！
+- 之前：Unknown Token 😢
+- 之后：PizzaCoin 🍕 with Logo！
+:::
+
+## 🚀 第一步：项目准备
+
+### 📦 获取起始代码
 
 ```bash
+# 克隆项目（如果你没有之前的代码）
+git clone https://github.com/all-in-one-solana/solana-token-client
+cd solana-token-client
+git checkout solution-without-burn
+
+# 安装新的依赖
 npm install @metaplex-foundation/js fs
 npm install @metaplex-foundation/mpl-token-metadata
 ```
 
-我们将借助`Metaplex SDK`添加元数据，并使用 `fs` 库来读取代币的标志图片。接下来，创建一个名为 `assets` 的新文件夹，并添加你的标志。这将在测试网络上进行，所以尽情玩乐吧！我选了一个比萨饼的表情符号，所以我把文件命名为`pizza.png`。
+:::info 💡 依赖说明
+- **@metaplex-foundation/js** - Metaplex 主 SDK
+- **@metaplex-foundation/mpl-token-metadata** - 元数据程序
+- **fs** - 文件系统，用于读取图片
+:::
 
-Metaplex将负责所有繁重的工作，所以请在`index.ts`文件顶部添加以下导入语句：
+### 🎨 准备你的代币图标
 
-```ts
+```bash
+# 创建资源文件夹
+mkdir assets
+
+# 添加你的图标（建议 512x512 PNG）
+# 例如：assets/pizza.png 🍕
+```
+
+选择你的图标：
+- 🍕 Pizza 币？用披萨图！
+- 🚀 Moon 币？用火箭图！
+- 🐕 Doge 2.0？用狗狗图！
+- 💎 Diamond？用钻石图！
+
+## 📝 第二步：理解工作流程
+
+### 🗺️ 元数据创建流程图
+
+```mermaid
+graph TD
+    A[🖼️ 本地图片] -->|转换| B[📦 Metaplex 文件]
+    B -->|上传| C[☁️ Arweave 存储]
+    C -->|获取 URI| D[📋 创建 JSON 元数据]
+    D -->|上传| E[🔗 元数据 URI]
+    E -->|创建| F[⛓️ 链上元数据账户]
+    F --> G[✨ 代币有身份了！]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style G fill:#bfb,stroke:#333,stroke-width:2px
+```
+
+### 📋 七步创建法
+
+```
+1️⃣ 图片 → Metaplex 文件格式
+2️⃣ 上传图片到 Arweave
+3️⃣ 创建 JSON 元数据
+4️⃣ 上传元数据到 Arweave
+5️⃣ 生成元数据账户 PDA
+6️⃣ 构建链上数据格式
+7️⃣ 发送创建交易
+```
+
+## 💻 第三步：编写代码
+
+### 📦 添加导入
+
+```typescript
+// 📁 src/index.ts 顶部
+
 import {
   Metaplex,
   keypairIdentity,
@@ -36,23 +111,10 @@ import {
 import * as fs from "fs"
 ```
 
-现在我们已经做好了一切准备，我们将开始处理元数据部分。首先进行链下操作，然后创建代币元数据账户。
+### 🎯 创建元数据函数
 
-从高层次来看，这里需要执行的步骤包括：
-
-1. 使用 `toMetaplexFile()` 方法将图像文件转换为Metaplex文件。
-2. 使用 `metaplex.storage().upload` 方法上传图片。
-3. 使用 `metaplex.uploadMetadata()` 方法上传链下元数据。
-4. 使用 `findMetadataPda()` 方法推导出元数据账户的程序派生地址（`PDA`）。
-5. 构建类型为 `DataV2` 的链上数据格式。
-6. 使用 `createCreateMetadataAccountV2Instruction` 方法创建元数据账户的构建指令（不是拼写错误哦）。
-7. 发送带有指令的交易，以创建令牌元数据账户。
-
-这里涉及许多步骤，但都是基础操作。花一点时间仔细阅读，你就能完全理解正在发生的事情！
-
-我们将创建一个单一的函数来完成所有这些操作：
-
-```ts
+```typescript
+// 🧬 为代币创建完整身份的函数
 async function createTokenMetadata(
   connection: web3.Connection,
   metaplex: Metaplex,
@@ -62,42 +124,62 @@ async function createTokenMetadata(
   symbol: string,
   description: string
 ) {
-  // file to buffer
-  const buffer = fs.readFileSync("assets/1203.png")
+  console.log("🎨 开始创建代币元数据...\n");
 
-  // buffer to metaplex file
-  const file = toMetaplexFile(buffer, "1203.png")
+  // 1️⃣ 读取图片文件
+  console.log("📖 Step 1: 读取图片文件...");
+  const buffer = fs.readFileSync("assets/pizza.png"); // 改成你的文件名！
+  console.log(`✅ 图片大小: ${(buffer.length / 1024).toFixed(2)} KB`);
 
-  // upload image and get image uri
-  const imageUri = await metaplex.storage().upload(file)
-  console.log("image uri:", imageUri)
+  // 2️⃣ 转换为 Metaplex 文件
+  console.log("\n🔄 Step 2: 转换文件格式...");
+  const file = toMetaplexFile(buffer, "pizza.png");
+  console.log("✅ 转换成功！");
 
-  // upload metadata and get metadata uri (off chain metadata)
-  const { uri } = await metaplex
+  // 3️⃣ 上传图片到 Arweave
+  console.log("\n☁️ Step 3: 上传图片到 Arweave...");
+  const imageUri = await metaplex.storage().upload(file);
+  console.log("✅ 图片已永久存储！");
+  console.log("🔗 图片链接:", imageUri);
+
+  // 4️⃣ 创建并上传元数据 JSON
+  console.log("\n📋 Step 4: 创建元数据 JSON...");
+  const { uri: metadataUri } = await metaplex
     .nfts()
     .uploadMetadata({
       name: name,
+      symbol: symbol,
       description: description,
       image: imageUri,
-    })
+      attributes: [],  // 可选：添加属性
+      properties: {
+        category: "currency",
+        creators: []
+      }
+    });
+  console.log("✅ 元数据已上传！");
+  console.log("🔗 元数据链接:", metadataUri);
 
-  console.log("metadata uri:", uri)
+  // 5️⃣ 生成元数据账户地址 (PDA)
+  console.log("\n🔑 Step 5: 生成元数据账户地址...");
+  const metadataPDA = metaplex.nfts().pdas().metadata({ mint });
+  console.log("📍 元数据 PDA:", metadataPDA.toBase58());
 
-  // get metadata account address
-  const metadataPDA = metaplex.nfts().pdas().metadata({ mint })
-
-  // onchain metadata format
+  // 6️⃣ 构建链上数据格式
+  console.log("\n🏗️ Step 6: 构建链上数据...");
   const tokenMetadata = {
     name: name,
     symbol: symbol,
-    uri: uri,
-    sellerFeeBasisPoints: 0,
-    creators: null,
-    collection: null,
-    uses: null,
-  } as DataV2
+    uri: metadataUri,
+    sellerFeeBasisPoints: 0,     // 无版税（代币用）
+    creators: null,               // 无创作者（代币用）
+    collection: null,             // 无集合（代币用）
+    uses: null,                   // 无使用限制
+  } as DataV2;
+  console.log("✅ 数据结构准备完成！");
 
-  // transaction to create metadata account
+  // 7️⃣ 创建交易
+  console.log("\n📝 Step 7: 创建元数据账户交易...");
   const transaction = new web3.Transaction().add(
     createCreateMetadataAccountV3Instruction(
       {
@@ -110,70 +192,54 @@ async function createTokenMetadata(
       {
         createMetadataAccountArgsV3: {
           data: tokenMetadata,
-          isMutable: true,
-          collectionDetails: null
+          isMutable: true,           // 可更新
+          collectionDetails: null     // 非 NFT 集合
         },
       }
     )
-  )
+  );
 
-  // send transaction
+  // 8️⃣ 发送交易
+  console.log("🚀 发送交易...");
   const transactionSignature = await web3.sendAndConfirmTransaction(
     connection,
     transaction,
     [user]
-  )
+  );
 
+  console.log("\n✨ 元数据创建成功！");
   console.log(
-    `Create Metadata Account: https://explorer.solana.com/tx/${transactionSignature}?cluster=devnet`
-  )
+    `🔍 查看交易: https://explorer.solana.com/tx/${transactionSignature}?cluster=devnet`
+  );
+
+  return metadataPDA;
 }
 ```
 
-确保你更新了文件名！此外，不必担心 `nfts()` 的调用 - 最初，Metaplex是为`NFT`构建的，但最近它扩展到了可替代代币的工作。
+:::warning ⚠️ 注意事项
+- 确保图片文件路径正确
+- 图片不要太大（建议 < 500KB）
+- `nfts()` 方法名不要困惑，它也用于代币
+:::
 
-你会注意到我们在这里留下了许多空白的地方 - 那是因为在创建可替代代币时，我们并不需要设置这些内容。非可替代代币则需要定义更具体的行为特性。
+### 🔧 更新主函数
 
-我可以逐个解释这个函数，但实际上我只是在重复自己。了解它的工作原理固然重要，但更重要的是知道如何使用它。你需要阅读文档来学习如何使用API，从而创建像这样的函数。
-
-我在讨论学会钓鱼的技能，而不仅仅是获取一条鱼。
-
-你的首选资源应始终是官方文档。但有时，新编写的代码可能还没有文档。所以你可以这样做 - 在代码被编写时查看它。如果你查看Metaplex的存储库，你会找到以下资源：
-
-- [用于createMetadataAccountV2指令的函数定义文档](https://metaplex-foundation.github.io/metaplex-program-library/docs/token-metadata/index.html#createCreateMetadataAccountV2Instruction?utm_source=buildspace.so&utm_medium=buildspace_project)
-- [createCreateMetadataAccountV2Instruction指令的实际函数定义](https://github.com/metaplex-foundation/metaplex-program-library/blob/caeab0f7/token-metadata/js/src/generated/instructions/CreateMetadataAccountV2.ts#L73?utm_source=buildspace.so&utm_medium=buildspace_project)
-- [createMetadataAccountV2指令的测试](https://github.com/metaplex-foundation/js/blob/c171e1e31d9fe12852afb39e449123339848180e/packages/js/test/plugins/nftModule/createNft.test.ts#L465?utm_source=buildspace.so&utm_medium=buildspace_project)
-
-这并不是什么深奥的科学，你只需要深入代码，找到你所需要的。理解代码构建的基本元素（在这种情况下是`Solana`指令）可能需要几次尝试，但回报是巨大的。
-
-通常，我会尝试以下操作：
-
-- 在`Discord`中搜索或询问（如`Metaplex`、`Anchor`等）。
-- 在`Stack Exchange`上搜索或提问。
-- 浏览项目或程序存储库，如果你想了解如何为程序设置指令，请参考测试。
-- 或者，如果没有可参考的测试，你可以在`GitHub`中复制/粘贴，并希望在某处找到参考。
-
-希望这能给你一些关于如何成为先驱者的启示：)
-
-现在，让我们回到按计划进行的建设！
-
-还记得之前保存的代币铸造地址吗？在调用这个新函数时，我们将使用它。如果你忘记了代币铸造账户的地址，你可以随时通过[浏览器](https://explorer.solana.com/?cluster=devnet)查找钱包地址，并检查代币选项卡。
-
-![](./img/token-spl.png)
-
-下面是我们更新后的 `main()` 函数，在调用 `createTokenMetadata` 函数时的样子：
-
-```ts
+```typescript
 async function main() {
-  const connection = new web3.Connection(web3.clusterApiUrl("devnet"))
-  const user = await initializeKeypair(connection)
+  console.log("🚀 启动代币元数据创建程序...\n");
 
-  console.log("PublicKey:", user.publicKey.toBase58())
+  // 🌐 连接网络
+  const connection = new web3.Connection(web3.clusterApiUrl("devnet"));
+  const user = await initializeKeypair(connection);
 
-  // MAKE SURE YOU REPLACE THIS ADDRESS WITH YOURS!
-  const MINT_ADDRESS = "87MGWR6EbAqegYXr3LoZmKKC9fSFXQx4EwJEAczcMpMF"
+  console.log("👤 你的地址:", user.publicKey.toBase58());
+  console.log("=" .repeat(60));
 
-  // metaplex setup
+  // ⚠️ 重要：替换成你的代币地址！
+  const MINT_ADDRESS = "替换成你的代币地址";
+
+  // 🎨 初始化 Metaplex
+  console.log("\n🔧 配置 Metaplex...");
   const metaplex = Metaplex.make(connection)
     .use(keypairIdentity(user))
     .use(
@@ -182,75 +248,205 @@ async function main() {
         providerUrl: "https://api.devnet.solana.com",
         timeout: 60000,
       })
-    )
+    );
+  console.log("✅ Metaplex 配置完成！");
 
-  // Calling the token
+  // 🧬 创建代币元数据
+  console.log("\n" + "=" .repeat(60));
   await createTokenMetadata(
     connection,
     metaplex,
     new web3.PublicKey(MINT_ADDRESS),
     user,
-    "Pizza", // Token name - REPLACE THIS WITH YOURS
-    "PZA",     // Token symbol - REPLACE THIS WITH YOURS
-    "Whoever holds this token is invited to my pizza party" // Token description - REPLACE THIS WITH YOURS
-  )
+    "Pizza Coin",     // 🍕 代币名称 - 改成你的！
+    "PIZZA",          // 🍕 代币符号 - 改成你的！
+    "最美味的加密货币，持有者可参加披萨派对！" // 描述 - 改成你的！
+  );
+
+  console.log("\n" + "=" .repeat(60));
+  console.log("🎉 恭喜！你的代币现在有了完整的身份！");
+  console.log("👛 去钱包看看你的专业代币吧！");
 }
 ```
 
-更新`Mnint`地址和代币详情，然后运行 `npm run start`，你会看到类似下面的输出：
+### 🔍 查找你的代币地址
+
+如果忘记了代币地址，可以这样找：
+
+1. 打开 [Solana Explorer](https://explorer.solana.com/?cluster=devnet)
+2. 搜索你的钱包地址
+3. 点击 "Tokens" 标签
+4. 复制代币地址
+
+![查找代币](./img/token-spl.png)
+
+## 🎮 第四步：运行程序
 
 ```bash
-> solana-course-client@1.0.0 start
-> ts-node src/index.ts
-
-Current balance is 1.996472479
-PublicKey: 5y3G3Rz5vgK9rKRxu3BaC3PvhsMKGyAmtcizgrxojYAA
-image uri: https://arweave.net/7sDCnvGRJAqfgEuGOYWhIshfgTC-hNfG4NSjwsKunQs
-metadata uri: https://arweave.net/-2vGrM69PNtb2YaHnOErh1_006D28JJa825CIcEGIok
-Create Metadata Account: https://explorer.solana.com/tx/4w8XEGCJY82MnBnErW9F5r1i5UL5ffJCCujcgFeXS8TTdZ6tHBEMznWnPoQXVcsPY3WoPbL2Nb1ubXCUJWWt2GWi?cluster=devnet
-Finished successfully
+npm run start
 ```
 
-所有必要的步骤都已一次性完成！你可以随意点击`Arweave`链接，就像去中心化和永久的`AWS S3/Google Cloud`存储一样，它会展示你上传的资产是什么样子的。
+### ✅ 成功输出示例
 
-如果你回到浏览器上的代币铸造账户，你会看到一个漂亮的新图标和名称。这是我的样子：
+```
+🚀 启动代币元数据创建程序...
 
-![](./img/pizaer.png)
+👤 你的地址: 5y3G3Rz5vgK9rKRxu3BaC3PvhsMKGyAmtcizgrxojYAA
+============================================================
 
-正如一位智者曾经说过，
+🔧 配置 Metaplex...
+✅ Metaplex 配置完成！
 
-![](./img/spider-man-pizza-time.gif)
+============================================================
+🎨 开始创建代币元数据...
 
-你的代币已经准备就绪！记得传播一些爱心。也许你可以给你的朋友或者`Discord`服务器中的其他建设者发送一些代币。在 `#progress` 频道分享你的地址，这样别人就可以给你空投他们的代币了。加油，你做得很好！:D
+📖 Step 1: 读取图片文件...
+✅ 图片大小: 42.35 KB
 
-## 🚢 挑战
+🔄 Step 2: 转换文件格式...
+✅ 转换成功！
 
-年轻的区块链探索者，现在是时候重新运用所学的课程概念从头开始构建了。
+☁️ Step 3: 上传图片到 Arweave...
+✅ 图片已永久存储！
+🔗 图片链接: https://arweave.net/7sDCnvGRJAqfgEuGOYW...
 
-你的挑战是尝试构建一个包含以下指令的单个交易：
+📋 Step 4: 创建元数据 JSON...
+✅ 元数据已上传！
+🔗 元数据链接: https://arweave.net/-2vGrM69PNtb2YaH...
 
-- 创建一个新的代币铸造；
-- 为代币铸造创建一个元数据账户；
-- 创建一个代币账户；
-    - 如果可能，请尝试有条件地添加此指令；
-    - 请参考 `getOrCreateAssociatedTokenAccount` 的实现方案；
-    - 提示：[链接](https://github.com/solana-labs/solana-program-library/blob/48fbb5b7c49ea35848442bba470b89331dea2b2b/token/js/src/actions/getOrCreateAssociatedTokenAccount.ts#L35)。
-- 铸造代币。
+✨ 元数据创建成功！
+🔍 查看交易: https://explorer.solana.com/tx/4w8XEG...
 
-这基本上就是你在生产环境中要完成的任务 - 将所有操作一次性地整合到一起。
+============================================================
+🎉 恭喜！你的代币现在有了完整的身份！
+👛 去钱包看看你的专业代币吧！
+```
 
-> 注意
-> 这个挑战比平常更自由。挑战自己，尝试并真正努力理解每个拼图的组成部分。
+## 🎨 第五步：查看成果
 
-要按照我们设想的方式进行操作，你需要逐步构建每个指令，然后将它们全部添加到一个事务中。在你自己尝试解决这个问题后，你可以在[此存储库](https://github.com/Unboxed-Software/solana-token-metadata?utm_source=buildspace.so&utm_medium=buildspace_project)的挑战分支中查看一个可能的实现。
+打开钱包或 Explorer，你的代币现在应该显示：
 
-![](./img/program-log.png)
+![成功的代币](./img/pizaer.png)
 
-额外的提示：[链接](https://solana-labs.github.io/solana-program-library/token/js/modules.html) - 直接查看源代码，不要依赖辅助函数。让这个挑战成为你Solana技能的飞跃！加油！
+从 "Unknown Token" 到专业代币的蜕变！🎉
 
-## Reference
+![庆祝时刻](./img/spider-man-pizza-time.gif)
 
-- [How to Create a Fungible SPL token with the New Metaplex Token Standard
-](https://www.quicknode.com/guides/solana-development/spl-tokens/how-to-create-a-fungible-spl-token-with-the-new-metaplex-token-standard)
-- [Token Program](https://spl.solana.com/token)
-- [与代币交互](https://davirain-su.github.io/solana-cookbook-zh/references/token.html)
+## 🏆 挑战任务：一键发币
+
+### 🎯 任务目标
+
+创建一个**单一交易**，包含所有操作：
+
+1. 🏭 创建代币铸造账户
+2. 🎨 创建元数据账户
+3. 💳 创建代币账户
+4. 🖨️ 铸造初始代币
+
+### 💡 实现思路
+
+```typescript
+async function createTokenWithMetadata() {
+  console.log("🚀 一键创建专业代币！\n");
+
+  const transaction = new web3.Transaction();
+
+  // 1️⃣ 添加创建铸造账户指令
+  console.log("添加：创建铸造账户...");
+  transaction.add(createMintInstruction(...));
+
+  // 2️⃣ 添加创建元数据指令
+  console.log("添加：创建元数据...");
+  transaction.add(createMetadataInstruction(...));
+
+  // 3️⃣ 条件性添加代币账户
+  const tokenAccount = await getOrCreateTokenAccount(...);
+  if (需要创建) {
+    console.log("添加：创建代币账户...");
+    transaction.add(createTokenAccountInstruction(...));
+  }
+
+  // 4️⃣ 添加铸造指令
+  console.log("添加：铸造代币...");
+  transaction.add(mintToInstruction(...));
+
+  // 🚀 一次性发送！
+  console.log("\n🎯 发送批量交易...");
+  const signature = await sendAndConfirmTransaction(
+    connection,
+    transaction,
+    [payer]
+  );
+
+  console.log("✅ 全部完成！一个交易搞定所有！");
+}
+```
+
+### 🔍 提示
+
+- 查看 `getOrCreateAssociatedTokenAccount` 的[源码](https://github.com/solana-labs/solana-program-library/blob/48fbb5b7/token/js/src/actions/getOrCreateAssociatedTokenAccount.ts#L35)
+- 使用原始指令而不是辅助函数
+- 注意指令的顺序很重要！
+
+### 🏅 成功标准
+
+![成功日志](./img/program-log.png)
+
+在 Explorer 中应该看到一个交易包含多个指令！
+
+## 💡 专业技巧
+
+### 🎨 图片优化建议
+
+```typescript
+// 检查文件大小
+const stats = fs.statSync("assets/logo.png");
+const fileSizeInMB = stats.size / (1024 * 1024);
+
+if (fileSizeInMB > 0.5) {
+  console.warn("⚠️ 图片太大，建议压缩到 500KB 以下");
+}
+
+// 支持多种格式
+const supportedFormats = ['.png', '.jpg', '.jpeg', '.gif'];
+```
+
+### 🔧 调试技巧
+
+```typescript
+// 验证元数据
+const mint = await metaplex.nfts().findByMint({
+  mintAddress: new PublicKey(MINT_ADDRESS)
+});
+console.log("当前元数据:", mint.json);
+
+// 更新元数据
+await metaplex.nfts().update({
+  nftOrSft: mint,
+  name: "New Name",
+  symbol: "NEW"
+});
+```
+
+## 🎊 恭喜完成！
+
+你的代币现在是个有身份的"人"了！
+
+### ✅ 你学会了什么
+
+- 🖼️ **上传图片** - 永久存储到 Arweave
+- 📋 **创建元数据** - JSON 格式规范
+- 🔑 **PDA 生成** - 元数据账户地址
+- ⛓️ **链上账户** - 创建元数据账户
+- 🎯 **批量操作** - 一个交易多个指令
+
+### 🚀 下一步
+
+1. **分享代币** - 发送给朋友们
+2. **更新元数据** - 尝试修改信息
+3. **创建 NFT** - 学习 NonFungible 标准
+4. **构建 DApp** - 创建铸币界面
+
+---
+
+**你的代币已经准备好征服世界了！** 🌍 **分享你的代币地址，让大家来交换！** 🔄
