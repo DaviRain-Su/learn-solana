@@ -15,69 +15,24 @@ tags:
 本地开发的基本流程如下
 
 1. 安装 [Rust](https://www.rust-lang.org/tools/install) 和 [Solana CLI](https://docs.solana.com/cli/install-solana-cli-tools)
-2. 使用`Solana CLI`，你可以使用**`solana-test-validator`**命令运行本地测试验证器，初始化账户等基本操作
+2. 使用`Solana CLI`，你可以使用`surfpool start`(surfpool 的本地开发体验要比solana-test-validator更方便)命令运行本地测试验证器，初始化账户等基本操作
 3. 使用 `cargo build-sbf` 和 `solana program deploy` 命令在本地构建和部署程序
 4. 使用 `solana logs` 命令查看程序日志
 
-## 本地环境配置
+## 本地环境配置 (Linux Or macOS)
 
-`Solana Program` 使用`Rust` 编写，调试运行。建议使用`Unix` 系列系统: `Mac` , `Linux` 等。
-如果很不幸你使用的是`Windows`,建议使用 `WSL` 下载`Ubuntu` ,并在其中完成运行。
+`Solana Program` 使用`Rust` 编写，调试运行。建议使用`Unix` 系列系统: `Mac` , `Linux` 等(Windows用户可以使用WSL，或者使用[WSL](https://docs.microsoft.com/en-us/windows/wsl/install)来运行`Solana CLI`命令)。
 
-### 在Windows上设置（带有Linux）
-
-#### 下载Windows子系统Linux（WSL）
-
-如果你使用的是`Windows`电脑，建议使用`Windows`子系统`Linux（WSL）`来构建你的`Solana`程序。
-
-打开**管理员**权限的`PowerShell`或`Windows`命令提示符，检查`Windows`版本
-
-```bash
-winver
-```
-
-如果你使用的是`Windows 10`版本`2004`及更高版本（`Build 19041`及更高版本）或`Windows 11`，请运行以下命令。
-
-```bash
-wsl --install
-```
-
-如果你正在使用较旧版本的`Windows`，请按照[这里](https://docs.microsoft.com/en-us/windows/wsl/install-manual)的说明进行操作。
-
-你可以在[这里](https://learn.microsoft.com/en-us/windows/wsl/install)阅读更多关于安装`WS`L的信息。
-
-#### 下载Ubuntu
-
-接下来，在这里[下载`Ubuntu`](https://apps.microsoft.com/store/detail/ubuntu-2004/9N6SVWS3RX71?hl=en-us&gl=US)。`Ubuntu`提供了一个终端，可以让你在`Windows`电脑上运行`Linux`。这就是你将运行`Solana CLI`命令的地方。
-
-#### 下载 Rust（适用于 WSL）
-
-接下来，打开`Ubuntu`终端并使用以下命令下载适用于`WSL`的`Rust`。你可以在[此处](https://www.rust-lang.org/learn/get-started)阅读有关下载`Rust`的更多信息。
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-#### 下载 Solana CLI
-
-现在我们准备下载适用于`Linux`的`Solana CLI`。请在`Ubuntu`终端中运行以下命令。你可以[在此处阅读](https://docs.solana.com/cli/install-solana-cli-tools)有关下载`Solana CLI`的更多信息。
-
-```bash
-sh -c "$(curl -sSfL https://release.solana.com/v1.16.10/install)"
-```
-
-### 在 macOS 上进行设置
-
-#### 下载 Rust
+### 下载 Rust
 
 首先，按照[这里](https://www.rust-lang.org/tools/install)的说明下载`Rust`。
 
-#### 下载Solana CLI
+### 下载Solana CLI
 
 接下来，在终端中运行以下命令下载`Solana CLI`。
 
 ```bash
-sh -c "$(curl -sSfL https://release.solana.com/v1.16.10/install)"
+sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
 ```
 
 你可以在[这里](https://docs.solana.com/cli/install-solana-cli-tools)了解更多关于下载`Solana CLI`的信息。
