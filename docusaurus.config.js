@@ -49,7 +49,7 @@ const config = {
   title: "Learn Solana",
   tagline: "By Davirain",
   url: "https://www.all-in-one-blockchain.xyz/",
-  baseUrl: "/learn-solana",
+  baseUrl: "/",
   onBrokenLinks: "throw",
   //onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
