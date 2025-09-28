@@ -12,7 +12,7 @@
 
 Solana Local Node、Solana CLI Tools、Network Wallet 交互
 
-🔗 [CLI 安装指南](https://solana.com/zh/developers/guides/getstarted/setup-local-development)
+🔗 [CLI 安装指南](https://solana.com/zh/docs/intro/installation)
 
 🔗 [Solana 浏览器](https://solscan.io/?cluster=devnet)
 
@@ -29,9 +29,9 @@ Solana Local Node、Solana CLI Tools、Network Wallet 交互
 
 ### 1.2 Solana 基本读写
 
-使用 Solana Native 开发、读写 Account Data、
+使用 Solana Anchor 开发、读写 Account Data、
 
-🔗 [Solana Hello World](https://solana.com/zh/developers/guides/getstarted/local-rust-hello-world)
+🔗 [Solana Hello World](https://solana.com/zh/docs/intro/quick-start/deploying-programs)
 
 🔗 [Solana Counter ](https://github.com/solana-developers/program-examples/blob/main/basics/counter/native/program/src/lib.rs)
 
@@ -52,9 +52,9 @@ Solana Local Node、Solana CLI Tools、Network Wallet 交互
 
 Account 数据传输序列化，数据检查（TypeScript SDK 基本使用）
 
-🔗 [Solana Account Read and Write](https://creatorsdao.github.io/solana-co-learn/Solana-Co-Learn/module3/native-solana-development/build-a-movie-review-program/)
+🔗 [Solana Account Read and Write](https://learn-solana-six.vercel.app/learn-solana/module3/native-solana-development/build-a-movie-review-program/)
 
-🔗 [状态管理和序列化](https://creatorsdao.github.io/solana-co-learn/Solana-Co-Learn/module3/native-solana-development/state-management/)
+🔗 [状态管理和序列化](https://learn-solana-six.vercel.app/learn-solana/module3/native-solana-development/state-management/)
 
 🔗 [https://solana.com/docs/clients/javascript](https://solana.com/docs/clients/javascript)
 
@@ -112,7 +112,6 @@ PDA , CPI , SPL Token
 Actions and Blinks
 
 🔗 [Actions and Blinks](https://solana.com/docs/advanced/actions)
-🔗 [Actions and Alerts](https://docs.dialect.to/documentation/alerts/alerts-quick-start)
 
 ## Module 4
 
@@ -127,8 +126,3 @@ https://github.com/elizaos-plugins/plugin-solana-v2
 https://github.com/sendaifun/solana-agent-kit
 
 🔗 [soldev Blinks](https://soldev.cn/wiki/blinks)
-
-
----
-
-[上一期黑客松获奖项目](https://blog.colosseum.org/announcing-the-winners-of-the-solana-renaissance-hackathon/)
