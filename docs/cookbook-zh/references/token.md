@@ -196,7 +196,7 @@ let tokenAmount = await connection.getTokenAccountBalance(tokenAccount);
 }
 ```
 
-## 如何销代币
+## 如何销代币 {#how-to-burn-tokens}
 
 如果你是代币的所有者，你可以销毁代币。
 
@@ -373,7 +373,7 @@ let tokenAmount = await connection.getTokenAccountBalance(tokenAccount);
 
 包装的 SOL与其他代币铸币类似，区别在于使用 `syncNative` 并在 `NATIVE_MINT` 地址上专门创建代币账户。
 
-### 创建代币账户
+### 创建代币账户 {#create-token-account}
 
 与 [创建代币账户](#create-token-account) 但将mint替换为`NATIVE_MINT`。
 

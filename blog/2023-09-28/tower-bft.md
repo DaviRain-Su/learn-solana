@@ -7,6 +7,8 @@ tags: [blog, blockchain, solana, tower-bft]
 
 在这篇博文中，我们将探讨 Tower BFT，这是 Solana 的 PBFT 自定义实现，它更喜欢活跃性而不是一致性。 Tower BFT 在达成共识之前利用 Solana 的 PoH 作为时钟，以减少消息传递开销和延迟。
 
+<!-- truncate -->
+
 :::info
 
 为了提供活力，如果副本无法执行请求，则必须移动到新视图。然而，当至少 2f + 1 个无故障副本处于同一视图中时，最大化时间段非常重要，并确保这段时间呈指数增长，直到执行某些请求的操作

@@ -107,7 +107,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 那可真是太棒了！
 
-## 资料
+## 资源 {#resources}
 [solana-program-bpf-template](https://github.com/mvines/solana-bpf-program-template)
 
 [RcpClient](https://docs.rs/solana-client/latest/solana_client/rpc_client/struct.RpcClient.html)

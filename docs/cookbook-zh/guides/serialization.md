@@ -489,7 +489,7 @@ impl ProgramInstruction {
 </Tabs>
 
 
-## 如何在程序中序列化账户数据
+## 如何在程序中序列化账户数据 {#account-data-serialization}
 
 ![Account Data Serialization](./serialization/ser3.png)
 
@@ -1231,7 +1231,7 @@ mod tests {
 </TabItem>
 </Tabs>
 
-## 资料
+## 资源 {#resources}
 
 - [Borsh Specification](https://borsh.io/)
 - [Rust Borsh](https://github.com/near/borsh-rs)

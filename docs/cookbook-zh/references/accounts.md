@@ -11,7 +11,7 @@ import TabItem from '@theme/TabItem';
 
 # 账户
 
-## 如何创建系统账户
+## 如何创建系统账户 {#create-a-system-account}
 
 创建一个由[系统程序](https://docs.solana.com/developing/clients/javascript-reference#systemprogram) 拥有的账户。Solana运行时将授予账户的所有者对其数据的写入权限或转移Lamports的访问权限。在创建账户时，我们需要预先分配一定大小的存储空间（space）和足够的Lamports来支付租金。 [租金（Rent）](https://docs.solana.com/developing/programming-model/accounts#rent) 是在Solana上保持账户活跃所需支付的费用。
 
@@ -75,7 +75,7 @@ match connection.send_and_confirm_transaction(&create_account_tx) {
 </Tabs>
 
 
-## 如何计算账户费用
+## 如何计算账户费用 {#calculating-rent-exemption}
 
 在Solana上保持账户活跃会产生一项存储费用，称为 [租金/rent](https://docs.solana.com/developing/programming-model/accounts#rent)。通过存入至少两年租金的金额，你可以使账户完全免除租金收取。对于费用的计算，你需要考虑你打算在账户中存储的数据量。
 

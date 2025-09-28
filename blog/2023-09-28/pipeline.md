@@ -5,6 +5,8 @@ authors: [davirain]
 tags: [blog, blockchain, solana, pipeline]
 ---
 
+<!-- truncate -->
+
 为了达到亚秒级的确认时间和 Solana 成为世界上第一个网络规模区块链所需的交易能力，仅仅快速达成共识是不够的。该团队必须开发一种方法来快速验证大量交易块，同时在网络上快速复制它们。为了实现这一目标，Solana 网络上的事务验证过程广泛使用了 CPU 设计中常见的一种称为管道的优化。
 
 

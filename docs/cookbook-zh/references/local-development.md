@@ -14,7 +14,7 @@ import TabItem from '@theme/TabItem';
 
 在本地测试验证器比在开发网络(devnet)上进行测试更可靠，并且可以帮助你在开发网络上运行之前进行测试。
 
-你可以通过安装 [solana工具套件](/getting-started/installation.md#install-cli)
+你可以通过安装 [solana工具套件](../getting-started/installation.md#install-cli)
 并运行以下命令来设置本地测试验证器：
 
 ```bash

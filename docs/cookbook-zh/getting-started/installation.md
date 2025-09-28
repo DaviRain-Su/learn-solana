@@ -10,6 +10,8 @@ import TabItem from '@theme/TabItem';
 
 # 安装
 
+## 安装 CLI {#install-cli}
+
 ## 安装Web3.js
 
 用JavaScript或者TypeScript进行Solana编程时，你会用到下面的几个库。<br/>

@@ -22,6 +22,8 @@ tags: [blog, blockchain, solana, poh]
 
 在我们的例子中，这意味着高吞吐量、高性能的区块链
 
+<!-- truncate -->
+
 ## 历史证明
 
 <iframe width="680" height="382" src="https://www.youtube.com/embed/rywOYfGu4EA" title="Proof of History Explainer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>

@@ -425,7 +425,7 @@ solana-keygen grind --starts-with e1v1s:1
 </TabItem>
 </Tabs>
 
-## 如何使用钱包来签名和验证消息
+## 如何使用钱包来签名和验证消息 {#how-to-sign-and-verify-messages-with-wallets}
 
 密钥对的主要功能是对消息进行签名并验证签名的有效性。通过验证签名，接收方可以确保数据是由特定私钥的所有者签名的。
 

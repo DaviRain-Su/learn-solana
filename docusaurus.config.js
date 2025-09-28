@@ -46,18 +46,18 @@ const SECTIONS = [
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Solana Co Learn",
-  tagline: "Power by 706 & Rustycab",
+  title: "Learn Solana",
+  tagline: "By Davirain",
   url: "https://www.all-in-one-blockchain.xyz/",
-  baseUrl: "/solana-co-learn",
+  baseUrl: "/learn-solana",
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
+  //onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "CreatorsDAO", // Usually your GitHub org/user name.
-  projectName: "solana-co-learn", // Usually your repo name.
+  organizationName: "DaviRain-Su", // Usually your GitHub org/user name.
+  projectName: "Learn solana", // Usually your repo name.
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -74,6 +74,7 @@ const config = {
       ({
         docs: false,
         blog: {
+          //onUntruncatedBlogPosts: "ignore", // 忽略博客截断警告
           showReadingTime: true,
           editUrl: "https://creatorsdao.github.io/solana-co-learn/blog",
         },

@@ -73,7 +73,7 @@ Solana支持以下的几个环境：
 | Mainnet-beta         | https://api.mainnet-beta.solana.com                                       |
 | Testnet              | https://api.testnet.solana.com                                            |
 | Devnet               | https://api.devnet.solana.com                                             |
-| Localhost            | 默认端口：8899（例如，http://localhost:8899，http://192.168.1.88:8899）      |
+| Localhost            | http://localhost:8899                                                      |
 
 部署到一个环境之后，客户端就可以通过对应集群的[RPC连接](https://docs.solana.com/developing/clients/jsonrpc-api)与链上程序进行交互。
 

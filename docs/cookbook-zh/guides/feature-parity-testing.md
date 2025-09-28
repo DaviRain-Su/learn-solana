@@ -329,7 +329,7 @@ fn test_devnet_parity_pass() {
 
 愉快的测试！
 
-## 资料
+## 资源 {#resources}
 
 - scfsd: https://github.com/FrankC01/solana-gadgets/tree/main/rust/scfsd)
 
