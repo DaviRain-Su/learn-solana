@@ -93,6 +93,23 @@ const config = {
     ],
   ],
 
+  // 添加 Mermaid 主题
+  themes: ["@docusaurus/theme-mermaid"],
+
+  // Mermaid 配置移到 markdown 中
+  markdown: {
+    format: "mdx",
+    mermaid: true,
+    preprocessor: ({ filePath, fileContent }) => {
+      return fileContent;
+    },
+    mdx1Compat: {
+      comments: true,
+      admonitions: true,
+      headingIds: true,
+    },
+  },
+
   plugins: [
     ...SECTIONS,
     path.resolve(__dirname, "./plugins/webpack-plugin.cjs"),
@@ -104,6 +121,17 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      // Mermaid 主题配置放在 themeConfig 中
+      mermaid: {
+        theme: {
+          light: "neutral",
+          dark: "dark",
+        },
+        options: {
+          maxTextSize: 50000,
+        },
+      },
+
       // 网站元数据
       metadata: [
         {
@@ -324,19 +352,8 @@ const config = {
       },
     }),
 
-  // 移除了 webpack 配置部分
-
   // 静态目录
   staticDirectories: ["static"],
-
-  // 自定义脚本（可选，如果不需要分析可以注释掉）
-  // scripts: [
-  //   {
-  //     src: 'https://plausible.io/js/script.js',
-  //     defer: true,
-  //     'data-domain': 'all-in-one-blockchain.xyz',
-  //   },
-  // ],
 
   // 自定义样式表
   stylesheets: [
