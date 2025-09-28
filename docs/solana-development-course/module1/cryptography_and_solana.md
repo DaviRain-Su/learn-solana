@@ -68,7 +68,7 @@ npm i @solana/web3.js
 要发送令牌、发送 NFTS 或读取和写入数据 Solana，您需要自己的密钥对。要创建新的密钥对，请使用 `@solana/web3.js` 中的 `Keypair.generate()` 函数：
 
 
-```js
+```javascript
 import { Keypair } from "@solana/web3.js";
 
 const keypair = Keypair.generate();
@@ -93,7 +93,7 @@ console.log(`The secret key is: `, keypair.secretKey);
 - 要使用 `.env` 文件，请使用 `getKeypairFromEnvironment()`
 - 要使用 `Solana CLI` 文件，请使用 `getKeypairFromFile()``
 
-```js
+```javascript
 import * as dotenv from "dotenv";
 import { getKeypairFromEnvironment } from "@solana-developers/node-helpers";
 
@@ -110,7 +110,7 @@ const keypair = getKeypairFromEnvironment("SECRET_KEY");
 
 创建一个新目录，安装 `TypeScript`、`Solana web3.js` 和 `esrun`：
 
-```bash
+```
 mkdir generate-keypair
 cd generate-keypair
 npm init -y
@@ -119,7 +119,7 @@ npm install typescript @solana/web3.js @digitak/esrun @solana-developers/node-he
 
 创建一个名为`generate-keypair.ts`的新文件
 
-```bash
+```javascript
 import { Keypair } from "@solana/web3.js";
 const keypair = Keypair.generate();
 console.log(`✅ Generated keypair!`)
@@ -127,13 +127,13 @@ console.log(`✅ Generated keypair!`)
 
 运行 `npx esrungenerate-keypair.ts`。您应该看到文本：
 
-```bash
+```
 ✅ Generated keypair!
 ```
 
 每个密钥对都有一个 `publicKey` 和 `SecretKey` 属性。更新文件：
 
-```bash
+```javascript
 import { Keypair } from "@solana/web3.js";
 
 const keypair = Keypair.generate();
@@ -145,7 +145,7 @@ console.log(`✅ Finished!`);
 
 运行 `npx esrungenerate-keypair.ts`。您应该看到文本：
 
-```bash
+```
 The public key is:  764CksEAZvm7C1mg2uFmpeFvifxwgjqxj2bH6Ps7La4F
 The secret key is:  Uint8Array(64) [
   (a long series of numbers)
@@ -160,13 +160,13 @@ The secret key is:  Uint8Array(64) [
 
 使用您之前创建的密钥的内容创建一个名为 `.env` 的新文件：
 
-```bash
+```
 SECRET_KEY="[(a series of numbers)]"
 ```
 
 然后我们可以从环境中加载密钥对。更新`generate-keypair.ts`：
 
-```js
+```javascript
 import * as dotenv from "dotenv";
 import { getKeypairFromEnvironment } from "@solana-developers/node-helpers";
 
@@ -182,7 +182,7 @@ console.log(
 运行 `npx esrungenerate-keypair.ts`。您应该看到以下结果：
 
 
-```bash
+```
 ✅ Finished! We've loaded our secret key securely, using an env file!
 ```
 

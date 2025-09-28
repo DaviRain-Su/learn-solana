@@ -39,7 +39,7 @@ function defineSection(section, version = {}, options = {}) {
 
 const SECTIONS = [
   defineSection("awesome-solana-zh"),
-  defineSection("Solana-Co-Learn"),
+  defineSection("learn-solana"),
   defineSection("cookbook-zh"),
   defineSection("solana-development-course"),
 ];
@@ -71,11 +71,11 @@ const config = {
       "@docusaurus/preset-classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        docs: false,
+        docs: null,
         blog: {
           //onUntruncatedBlogPosts: "ignore", // 忽略博客截断警告
           showReadingTime: true,
-          editUrl: "https://creatorsdao.github.io/solana-co-learn/blog",
+          editUrl: "https://github.com/DaviRain-Su/learn-solana/tree/main/blog",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -106,9 +106,9 @@ const config = {
             label: "Awesome Solana Zh",
           },
           {
-            href: "/Solana-Co-Learn",
+            href: "/learn-solana",
             position: "left",
-            label: "Solana Co Learn",
+            label: "Learn Solana",
           },
           {
             href: "/solana-development-course",
@@ -122,7 +122,7 @@ const config = {
           },
           { to: "/blog", label: "Blog", position: "left" },
           {
-            href: "https://github.com/CreatorsDAO/solana-co-learn.git",
+            href: "https://github.com/DaviRain-Su/learn-solana",
             label: "GitHub",
             position: "right",
           },
@@ -136,22 +136,13 @@ const config = {
             items: [
               {
                 label: "Forum",
-                href: "https://github.com/CreatorsDAO/solana-co-learn/discussions",
+                href: "https://github.com/DaviRain-Su/learn-solana/discussions",
               },
             ],
           },
           {
             title: "Community",
-            items: [
-              {
-                label: "Discord",
-                href: "https://discord.gg/92B7aka3qr",
-              },
-              {
-                label: "Twitter",
-                href: "https://twitter.com/SolanaCreators",
-              },
-            ],
+            items: [],
           },
           {
             title: "More",
@@ -162,7 +153,7 @@ const config = {
               },
               {
                 label: "GitHub",
-                href: "https://github.com/CreatorsDAO",
+                href: "https://github.com/DaviRain-Su",
               },
             ],
           },

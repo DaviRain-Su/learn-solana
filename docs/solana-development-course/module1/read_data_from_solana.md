@@ -42,7 +42,7 @@ SOL 是 Solana 的原生代币 - SOL 用于支付交易费用、支付账户租�
 
 我们使用名为 `@solana/web3.js` 的 npm 包来完成 Solana 的大部分工作。我们还将安装 TypeScript 和 esrun，以便我们可以运行命令行：
 
-```bash
+```
 npm install typescript @solana/web3.js @digitak/esrun
 ```
 
@@ -52,7 +52,7 @@ npm install typescript @solana/web3.js @digitak/esrun
 
 现在我们将使用 `Devnet` 集群而不是`Mainnet`。顾名思义，`Devnet` 集群是为开发人员使用和测试而设计的。
 
-```ts
+```javascript
 import { Connection, clusterApiUrl } from "@solana/web3.js";
 
 const connection = new Connection(clusterApiUrl("devnet"));
@@ -61,7 +61,7 @@ console.log(`✅ Connected!`)
 
 运行此 TypeScript (`npx esrun example.ts`) 显示：
 
-```bash
+```
 ✅ Connected!
 ```
 
@@ -69,7 +69,7 @@ console.log(`✅ Connected!`)
 
 读取账户余额：
 
-```ts
+```javascript
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 
 const connection = new Connection(clusterApiUrl("devnet"));
@@ -83,7 +83,7 @@ console.log(`✅ Finished!`)
 退回的余额存放在灯箱中。 lamport 是 Sol 的小单位，就像美分对美元或便士对英镑一样。单个 lamport 代表 0.000000001 SOL。大多数时候，我们会将 SOL 作为 Lamport 进行传输、花费、存储和处理，仅转换为完整的 SOL 来显示给用户。 Web3.js 提供了常量 `LAMPORTS_PER_SOL` 来进行快速转换。
 
 
-```js
+```javascript
 import { Connection, PublicKey, clusterApiUrl, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 const connection = new Connection(clusterApiUrl("devnet"));
@@ -97,7 +97,7 @@ console.log(`✅ Finished!`)
 
 运行 `npx esrun example.ts` 将显示类似以下内容：
 
-```bash
+```
 The balance of the account at CenYq6bDRB7p73EjsPEpiYN7uveyPUTdXkDkgUduboaN is 0.00114144 SOL
 ✅ Finished!
 ```
@@ -130,7 +130,7 @@ The balance of the account at CenYq6bDRB7p73EjsPEpiYN7uveyPUTdXkDkgUduboaN is 0.
 
 现在该库已可用，让我们进入 `addressSubscribedHandler()` 并使用表单输入中的地址值创建 `PublicKey` 的实例。接下来，创建 `Connection` 的实例并使用它来调用 `getBalance()`。传入您刚刚创建的公钥的值。最后，调用`setBalance()`，传入`getBalance`的结果。如果您愿意，请独立尝试，而不是从下面的代码片段中复制。
 
-```ts
+```javascript
 import type { NextPage } from 'next'
 import { useState } from 'react'
 import styles from '../styles/Home.module.css'
@@ -164,7 +164,7 @@ const Home: NextPage = () => {
 
 为了解决这个问题，让我们将所有内容包装在 `try-catch` 块中，并在用户输入无效时提醒用户。
 
-```ts
+```javascript
 const addressSubmittedHandler = async (address: string) => {
   try {
     setAddress(address);
