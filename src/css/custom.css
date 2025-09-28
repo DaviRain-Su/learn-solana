@@ -1,212 +1,367 @@
 /* src/css/custom.css */
 
-/* 引入优质字体 */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap");
+/* 引入字体 - 霞鹜文楷使用最新版本 */
+@import url("https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.7.0/style.css");
+@import url("https://cdn.jsdelivr.net/npm/lxgw-wenkai-mono-webfont@1.7.0/style.css");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap");
 
 :root {
-    /* 主色调 - 优雅的紫色系 */
-    --ifm-color-primary: #6366f1;
-    --ifm-color-primary-dark: #4f46e5;
-    --ifm-color-primary-darker: #4338ca;
-    --ifm-color-primary-darkest: #3730a3;
-    --ifm-color-primary-light: #818cf8;
-    --ifm-color-primary-lighter: #a5b4fc;
-    --ifm-color-primary-lightest: #c7d2fe;
+    /* 主色调 - 现代蓝紫渐变 */
+    --ifm-color-primary: #5e72e4;
+    --ifm-color-primary-dark: #4c63d2;
+    --ifm-color-primary-darker: #3651c6;
+    --ifm-color-primary-darkest: #2740b3;
+    --ifm-color-primary-light: #7286e7;
+    --ifm-color-primary-lighter: #869aec;
+    --ifm-color-primary-lightest: #a7b8f3;
 
-    /* 字体设置 */
+    /* 字体栈 - 霞鹜文楷优先 */
     --ifm-font-family-base:
-        "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
-    --ifm-font-family-monospace: "JetBrains Mono", "Fira Code", monospace;
+        "LXGW WenKai Screen", "LXGW WenKai", "Plus Jakarta Sans", "PingFang SC",
+        "Microsoft YaHei", system-ui, -apple-system, sans-serif;
 
-    /* 字体大小优化 */
-    --ifm-font-size-base: 16px;
-    --ifm-line-height-base: 1.75;
+    /* 中文专用字体 - 霞鹜文楷 */
+    --chinese-font-family:
+        "LXGW WenKai Screen", "LXGW WenKai", "PingFang SC", "Microsoft YaHei",
+        sans-serif;
+
+    /* 代码字体 - 包含霞鹜文楷等宽 */
+    --ifm-font-family-monospace:
+        "Fira Code", "LXGW WenKai Mono", "Cascadia Code", "JetBrains Mono",
+        Consolas, monospace;
+
+    /* 标题字体 */
+    --ifm-heading-font-family:
+        "LXGW WenKai Screen", "LXGW WenKai", "Plus Jakarta Sans",
+        var(--ifm-font-family-base);
+
+    /* 字体大小优化 - 霞鹜文楷稍大更清晰 */
+    --ifm-font-size-base: 18px;
+    --ifm-line-height-base: 1.85;
+    --ifm-code-font-size: 15px;
+
+    /* 字重优化 */
+    --ifm-font-weight-light: 300;
+    --ifm-font-weight-normal: 400;
+    --ifm-font-weight-medium: 500;
+    --ifm-font-weight-semibold: 600;
+    --ifm-font-weight-bold: 700;
+    --ifm-heading-font-weight: 700;
 
     /* 间距调整 */
     --ifm-spacing-horizontal: 1.5rem;
     --ifm-spacing-vertical: 1.5rem;
+    --ifm-paragraph-margin-bottom: 1.35rem;
 
     /* 代码块样式 */
-    --ifm-code-font-size: 14px;
-    --ifm-code-border-radius: 8px;
-    --ifm-code-padding-horizontal: 1rem;
-    --ifm-code-padding-vertical: 0.75rem;
+    --ifm-code-border-radius: 6px;
+    --ifm-code-padding-horizontal: 0.8rem;
+    --ifm-code-padding-vertical: 0.6rem;
 
     /* 容器宽度 */
-    --ifm-container-width-xl: 1280px;
+    --ifm-container-width-xl: 1320px;
 
     /* 导航栏高度 */
-    --ifm-navbar-height: 64px;
+    --ifm-navbar-height: 60px;
 
     /* 边框圆角 */
     --ifm-global-radius: 8px;
-    --ifm-button-border-radius: 8px;
-    --ifm-card-border-radius: 12px;
+    --ifm-button-border-radius: 6px;
+    --ifm-card-border-radius: 10px;
 
     /* 阴影效果 */
-    --ifm-global-shadow-lw: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-    --ifm-global-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --ifm-global-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --ifm-global-shadow-lw: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+    --ifm-global-shadow-md: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+    --ifm-global-shadow-lg: 0 12px 24px 0 rgba(0, 0, 0, 0.12);
 }
 
 /* 暗色主题 */
 [data-theme="dark"] {
-    --ifm-color-primary: #818cf8;
-    --ifm-color-primary-dark: #6366f1;
-    --ifm-color-primary-darker: #4f46e5;
-    --ifm-color-primary-darkest: #4338ca;
-    --ifm-color-primary-light: #a5b4fc;
-    --ifm-color-primary-lighter: #c7d2fe;
-    --ifm-color-primary-lightest: #e0e7ff;
+    --ifm-color-primary: #7c8ff5;
+    --ifm-color-primary-dark: #5e72e4;
+    --ifm-color-primary-darker: #4c63d2;
+    --ifm-color-primary-darkest: #3651c6;
+    --ifm-color-primary-light: #95a5f7;
+    --ifm-color-primary-lighter: #aeb9f9;
+    --ifm-color-primary-lightest: #c7cefb;
 
-    --ifm-background-color: #0f172a;
-    --ifm-background-surface-color: #1e293b;
-    --ifm-navbar-background-color: #0f172a;
+    --ifm-background-color: #1a1b26;
+    --ifm-background-surface-color: #24253a;
+    --ifm-navbar-background-color: #1a1b26;
 
     /* 代码块背景 */
-    --prism-background-color: #1e293b;
+    --prism-background-color: #24253a;
 }
 
-/* 导航栏样式 */
-.navbar {
-    backdrop-filter: blur(8px);
-    background-color: rgba(var(--ifm-navbar-background-color-rgb), 0.8);
-    box-shadow: var(--ifm-global-shadow-lw);
+/* ==================== 强制应用霞鹜文楷 ==================== */
+
+/* 全局强制应用 */
+* {
+    font-family:
+        "LXGW WenKai Screen", "LXGW WenKai", var(--ifm-font-family-base) !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
-/* 文章内容优化 */
-.markdown {
-    --ifm-h1-font-size: 2.5rem;
-    --ifm-h2-font-size: 2rem;
-    --ifm-h3-font-size: 1.5rem;
-    --ifm-h4-font-size: 1.25rem;
-    --ifm-h5-font-size: 1rem;
+/* HTML 和 Body */
+html {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+    font-size: var(--ifm-font-size-base);
+    scroll-behavior: smooth;
 }
 
+body {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+    font-weight: var(--ifm-font-weight-normal);
+    line-height: var(--ifm-line-height-base);
+    letter-spacing: 0.01em;
+    font-feature-settings: "kern" 1;
+}
+
+/* 所有文本元素 */
+p,
+span,
+div,
+li,
+td,
+th,
+dt,
+dd,
+label {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+}
+
+/* Markdown 内容 */
+.markdown,
+.markdown p,
+.markdown li,
+.markdown td,
+.markdown th,
+.markdown blockquote {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+}
+
+/* 标题强制应用霞鹜文楷 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 .markdown h1,
 .markdown h2,
 .markdown h3,
 .markdown h4,
 .markdown h5,
-.markdown h6 {
-    font-weight: 600;
-    line-height: 1.25;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
+.markdown h6,
+.hero__title,
+.hero__subtitle {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+    font-weight: var(--ifm-heading-font-weight);
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
 }
 
+/* 标题大小 */
+.markdown h1 {
+    font-size: 2.5rem;
+}
+.markdown h2 {
+    font-size: 2rem;
+}
+.markdown h3 {
+    font-size: 1.5rem;
+}
+.markdown h4 {
+    font-size: 1.25rem;
+}
+.markdown h5 {
+    font-size: 1.125rem;
+}
+.markdown h6 {
+    font-size: 1rem;
+}
+
+/* 导航栏字体 */
+.navbar,
+.navbar__brand,
+.navbar__title,
+.navbar__item,
+.navbar__link {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+    font-weight: var(--ifm-font-weight-medium);
+}
+
+.navbar__title {
+    font-size: 1.25rem;
+    font-weight: var(--ifm-font-weight-bold);
+}
+
+.navbar__item {
+    font-size: 0.95rem;
+}
+
+/* 侧边栏字体 */
+.menu,
+.menu__list,
+.menu__list-item,
+.menu__link,
+.menu__link-sublist {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+    font-size: 0.95rem;
+}
+
+.menu__link {
+    font-weight: var(--ifm-font-weight-normal);
+    padding: 0.5rem 0.75rem;
+}
+
+.menu__link--active {
+    font-weight: var(--ifm-font-weight-semibold);
+}
+
+/* 按钮 */
+.button,
+button,
+input[type="button"],
+input[type="submit"] {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+    font-weight: var(--ifm-font-weight-medium);
+    letter-spacing: 0.02em;
+}
+
+/* 表格 */
+table,
+th,
+td {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+}
+
+/* 目录 */
+.table-of-contents,
+.table-of-contents__link {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+    font-size: 0.875rem;
+}
+
+.table-of-contents__link--active {
+    font-weight: var(--ifm-font-weight-semibold);
+}
+
+/* 面包屑 */
+.breadcrumbs__item,
+.breadcrumbs__link {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+}
+
+/* 页脚 */
+.footer,
+.footer__title,
+.footer__item,
+.footer__link {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+}
+
+/* ==================== 代码样式 ==================== */
+
+/* 代码字体 - 使用等宽字体 */
+code,
+kbd,
+pre,
+samp,
+var,
+tt,
+.prism-code {
+    font-family:
+        "LXGW WenKai Mono", "Fira Code", var(--ifm-font-family-monospace) !important;
+    font-feature-settings:
+        "liga" 1,
+        "calt" 1;
+    font-variant-ligatures: contextual;
+}
+
+/* 内联代码 */
+:not(pre) > code {
+    font-size: 0.9em;
+    font-weight: 500;
+    padding: 0.15em 0.3em;
+    border-radius: 4px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--ifm-color-primary);
+}
+
+[data-theme="dark"] :not(pre) > code {
+    background: rgba(124, 143, 245, 0.15);
+}
+
+/* 代码块 */
+pre {
+    font-size: var(--ifm-code-font-size);
+    line-height: 1.6;
+}
+
+/* ==================== 中文优化 ==================== */
+
+/* 段落优化 */
+p,
 .markdown p {
-    margin-bottom: 1.25rem;
-    line-height: 1.8;
+    line-height: var(--ifm-line-height-base);
+    margin-bottom: var(--ifm-paragraph-margin-bottom);
+    text-align: justify;
+    text-justify: inter-ideograph;
+}
+
+/* 列表优化 */
+ul,
+ol,
+.markdown ul,
+.markdown ol {
+    line-height: 1.85;
 }
 
 .markdown li {
-    line-height: 1.7;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.5em;
+    line-height: 1.85;
+}
+
+/* 中文标点优化 */
+.markdown:lang(zh),
+.markdown p:lang(zh),
+.markdown li:lang(zh) {
+    text-spacing: ideograph-alpha;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* ==================== 组件样式 ==================== */
+
+/* 导航栏样式 */
+.navbar {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: var(--ifm-global-shadow-lw);
+}
+
+[data-theme="dark"] .navbar {
+    background-color: rgba(26, 27, 38, 0.9);
 }
 
 /* 代码块美化 */
 div[class*="codeBlockContainer"] {
     box-shadow: var(--ifm-global-shadow-md);
-    margin-bottom: 1.5rem;
+    margin: 1.5rem 0;
     border-radius: var(--ifm-code-border-radius);
     overflow: hidden;
 }
 
-/* 代码高亮 */
-code {
-    font-weight: 500;
-    padding: 0.1rem 0.3rem;
-    border-radius: 4px;
-}
-
-/* 表格美化 */
-table {
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: var(--ifm-global-shadow-lw);
-}
-
-table thead {
-    background: var(--ifm-color-primary-lightest);
-}
-
-[data-theme="dark"] table thead {
-    background: var(--ifm-color-primary-darkest);
-}
-
-/* 侧边栏优化 */
-.menu {
-    font-weight: 450;
-    padding: 1rem;
-}
-
-.menu__link {
-    border-radius: 6px;
-    margin: 2px 0;
-    padding: 0.5rem 0.75rem;
-    transition: all 0.2s ease;
-}
-
-.menu__link:hover {
-    background: var(--ifm-color-primary-lightest);
-    color: var(--ifm-color-primary-dark);
-}
-
-[data-theme="dark"] .menu__link:hover {
-    background: var(--ifm-color-primary-darkest);
-    color: var(--ifm-color-primary-light);
-}
-
-.menu__link--active {
-    background: var(--ifm-color-primary);
-    color: white !important;
-}
-
-/* 卡片样式 */
-.card {
-    border-radius: var(--ifm-card-border-radius);
-    box-shadow: var(--ifm-global-shadow-md);
-    transition: all 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--ifm-global-shadow-lg);
-}
-
-/* 按钮优化 */
-.button {
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--ifm-global-shadow-md);
-}
-
-/* 搜索框美化 */
-.navbar__search-input {
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-}
-
-/* 页脚优化 */
-.footer {
-    background: linear-gradient(
-        180deg,
-        var(--ifm-background-surface-color),
-        var(--ifm-background-color)
-    );
-}
-
 /* 滚动条美化 */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -215,21 +370,14 @@ table thead {
 
 ::-webkit-scrollbar-thumb {
     background: var(--ifm-color-primary);
-    border-radius: 4px;
+    border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--ifm-color-primary-dark);
 }
 
-/* 响应式优化 */
-@media (max-width: 996px) {
-    :root {
-        --ifm-font-size-base: 15px;
-    }
-}
-
-/* 添加阅读进度条 */
+/* 阅读进度条 */
 .reading-progress-bar {
     position: fixed;
     top: 0;
@@ -246,54 +394,40 @@ table thead {
     transition: transform 0.2s ease;
 }
 
-/* 文章目录样式优化 */
-.table-of-contents {
-    font-size: 0.9rem;
-    border-left: 2px solid var(--ifm-color-primary-lightest);
-    padding-left: 1rem;
-}
-
-.table-of-contents__link {
-    color: var(--ifm-color-content-secondary);
-    text-decoration: none;
-    display: block;
-    padding: 0.25rem 0;
-    transition: all 0.2s ease;
-}
-
-.table-of-contents__link--active,
-.table-of-contents__link:hover {
-    color: var(--ifm-color-primary);
-    font-weight: 500;
-}
-
-/* 添加平滑滚动 */
-html {
-    scroll-behavior: smooth;
-}
-
-/* 优化引用块 */
+/* 引用块 */
 blockquote {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
     border-left: 4px solid var(--ifm-color-primary);
-    background: var(--ifm-color-primary-lightest);
+    background: rgba(99, 102, 241, 0.05);
     padding: 1rem 1.5rem;
     border-radius: 0 8px 8px 0;
-    font-style: italic;
+    font-style: normal;
 }
 
 [data-theme="dark"] blockquote {
-    background: var(--ifm-color-primary-darkest);
+    background: rgba(124, 143, 245, 0.1);
 }
 
-/* 提示框美化 */
+/* 提示框 */
 .admonition {
-    border-radius: 8px;
-    border-left-width: 4px;
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
 }
 
-/* 标签美化 */
-.badge {
-    border-radius: 4px;
-    padding: 0.25rem 0.5rem;
-    font-weight: 500;
+/* 搜索框 */
+.navbar__search-input,
+.DocSearch-Input {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif !important;
+}
+
+/* 响应式 */
+@media (max-width: 996px) {
+    :root {
+        --ifm-font-size-base: 17px;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --ifm-font-size-base: 16px;
+    }
 }

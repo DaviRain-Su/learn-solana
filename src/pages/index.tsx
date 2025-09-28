@@ -17,7 +17,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="learn-solana/module1/local_program_development/anchor_program_hello"
+            to="learn-solana/basic/local_program_development/anchor_program_hello"
           >
             All in One Solana Tutorial - 5min ⏱️
           </Link>
