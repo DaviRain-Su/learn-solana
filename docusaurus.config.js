@@ -28,7 +28,7 @@ function defineSection(section, version = {}, options = {}) {
       ],
       breadcrumbs: false,
       sidebarPath: require.resolve("./sidebars.cjs"),
-      editUrl: "https://github.com/CreatorsDAO/solana-co-learn/tree/main",
+      editUrl: "https://github.com/DaviRain-Su/learn-solana/tree/main",
       showLastUpdateAuthor: true,
       showLastUpdateTime: true,
       versions: version && {
