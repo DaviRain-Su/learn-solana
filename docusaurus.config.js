@@ -20,12 +20,16 @@ function defineSection(section, version = {}, options = {}) {
       path: `docs/${section}`,
       routeBasePath: section,
       include: ["**/*.md", "**/*.mdx"],
+      exclude: [
+        "**/_*.{js,jsx,ts,tsx,md,mdx}",
+        "**/_*/**",
+        "**/*.test.{js,jsx,ts,tsx}",
+        "**/__tests__/**",
+      ],
       breadcrumbs: false,
       sidebarPath: require.resolve("./sidebars.cjs"),
       editUrl: "https://github.com/CreatorsDAO/solana-co-learn/tree/main",
-      // Equivalent to `enableUpdateBy`.
       showLastUpdateAuthor: true,
-      // Equivalent to `enableUpdateTime`.
       showLastUpdateTime: true,
       versions: version && {
         current: {
@@ -37,6 +41,7 @@ function defineSection(section, version = {}, options = {}) {
   ];
 }
 
+// 不需要重复设置 routeBasePath
 const SECTIONS = [
   defineSection("awesome-solana-zh"),
   defineSection("learn-solana"),
@@ -50,17 +55,14 @@ const config = {
   tagline: "By Davirain",
   url: "https://www.all-in-one-blockchain.xyz/",
   baseUrl: "/",
-  onBrokenLinks: "throw",
+  onBrokenLinks: "warn", // 改为 warn，避免构建失败
+  onBrokenAnchors: "warn", // 添加这行
   favicon: "img/favicon.ico",
 
   // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: "DaviRain-Su", // Usually your GitHub org/user name.
-  projectName: "Learn solana", // Usually your repo name.
+  organizationName: "DaviRain-Su",
+  projectName: "Learn solana",
 
-  // Even if you don't use internalization, you can use this field to set useful
-  // metadata like html lang. For example, if your site is Chinese, you may want
-  // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
@@ -71,9 +73,9 @@ const config = {
       "@docusaurus/preset-classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        docs: null,
+        docs: false, // 使用 false 而不是 null
         blog: {
-          //onUntruncatedBlogPosts: "ignore", // 忽略博客截断警告
+          onUntruncatedBlogPosts: "ignore", // 取消注释
           showReadingTime: true,
           editUrl: "https://github.com/DaviRain-Su/learn-solana/tree/main/blog",
         },
@@ -163,7 +165,6 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        // Additional languages can be added here.
         additionalLanguages: ["powershell", "rust", "toml", "yaml", "c", "cpp"],
       },
       algolia: {

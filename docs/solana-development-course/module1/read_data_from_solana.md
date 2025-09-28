@@ -83,6 +83,7 @@ console.log(`✅ Finished!`)
 退回的余额存放在灯箱中。 lamport 是 Sol 的小单位，就像美分对美元或便士对英镑一样。单个 lamport 代表 0.000000001 SOL。大多数时候，我们会将 SOL 作为 Lamport 进行传输、花费、存储和处理，仅转换为完整的 SOL 来显示给用户。 Web3.js 提供了常量 `LAMPORTS_PER_SOL` 来进行快速转换。
 
 
+
 ```javascript
 import { Connection, PublicKey, clusterApiUrl, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
@@ -148,7 +149,8 @@ const Home: NextPage = () => {
     const balance = await connection.getBalance(key);
     setBalance(balance / web3.LAMPORTS_PER_SOL);
   }
-  ...
+
+  // ... 其他代码
 }
 ```
 
