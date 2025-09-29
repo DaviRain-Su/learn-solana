@@ -1,369 +1,120 @@
 ---
 sidebar_position: 79
-sidebar_label: 将所有部分整合到一起
+sidebar_label: 🎯 将所有部分整合到一起
 sidebar_class_name: green
 ---
 
-# 将所有部分整合到一起
+# 🎯 将所有部分整合到一起 - 完成NFT质押系统！
 
-**前端质押部分**
+## 🏁 欢迎来到最后冲刺！
 
-你能感受到吗？终点线就在眼前了...至少对于这个核心部分来说是这样的。😆
+嘿，Web3勇士们！👋 能感受到吗？**终点线就在眼前**！🏃‍♂️💨 经过了这么长的旅程，今天我们要把所有的积木拼在一起，让你的NFT质押系统**真正运转起来**！
 
-我们将集中精力使程序前端的质押和解质押指令正常运行。
+> 🎯 **今日任务：** 完成前端与智能合约的完美对接，让用户能够一键质押、领取奖励！
 
-首先，在你的前端项目的根目录下创建一个名为 `utils` 的新文件夹。然后，创建一个名为 `instructions.ts` 的文件，并从NFT质押项目中复制/粘贴整个 `instructions.ts` 文件。由于代码超过`200`行，所以我不会在这里粘贴。😬
+### 🗺️ 今日冒险地图
 
-下一步我们将进入 `StakeOptionsDisplay` 文件（`//components/StakeOptionsDisplay.rs`）。你会注意到我们有三个空函数：`handleStake`、`handleUnstake` 和 `handleClaim`。这将是本节的重点。
-
-和往常一样，先让我们准备好钱包和网络连接。
-
-```js
-const walletAdapter = useWallet()
-const { connection } = useConnection()
+```
+🎮 起点：准备前端环境
+    ↓
+📦 Step 1: 设置工具文件
+    ↓
+⚡ Step 2: 实现质押功能
+    ↓
+💰 Step 3: 实现领取奖励
+    ↓
+🔓 Step 4: 实现解除质押
+    ↓
+🎨 Step 5: 完善UI交互
+    ↓
+🏆 终点：完整的质押系统！
 ```
 
-我们先确认下钱包是否已连接。
+---
 
-```js
-if (!walletAdapter.connected || !walletAdapter.publicKey) {
-  alert("Please connect your wallet")
-  return
-}
+## 📦 Step 0: 项目准备工作
+
+### 🛠️ 创建必要的文件结构
+
+```bash
+# 📁 在你的前端项目根目录创建utils文件夹
+mkdir utils
+cd utils
+
+# 📝 创建核心文件
+touch instructions.ts   # 指令构建器
+touch constants.ts      # 常量定义
+touch accounts.ts       # 账户管理
 ```
 
-如果一切正常，我们可以开始创建质押指示。
+> 💡 **Pro Tip:** 从你的NFT质押程序复制完整的 `instructions.ts` 文件（200+行代码）。这包含了所有与智能合约交互的指令！
 
-```js
-const stakeInstruction = createStakingInstruction(
-      walletAdapter.publicKey,
-      nftTokenAccount,
-      nftData.mint.address,
-      nftData.edition.address,
-      TOKEN_PROGRAM_ID, // 需要导入
-      METADATA_PROGRAM_ID, // 需要导入
-      PROGRAM_ID // 需要从constants.ts导入
-    )
+### 📋 文件结构概览
+
+```
+📦 your-frontend-project/
+├── 📂 pages/
+│   └── 📜 stake.tsx           # 质押页面
+├── 📂 components/
+│   └── 📜 StakeOptionsDisplay.tsx  # 质押选项组件
+├── 📂 utils/                  # 🆕 工具文件夹
+│   ├── 📜 instructions.ts     # 指令构建
+│   ├── 📜 constants.ts        # 常量管理
+│   └── 📜 accounts.ts         # 账户工具
+└── 📜 .env.local             # 环境变量
 ```
 
-因此，进入 `utils` 文件夹，添加一个名为 `constants.ts` 的文件，并加入以下内容：
+---
 
-```js
+## 🔧 Step 1: 设置常量和环境变量
+
+### 📝 创建constants.ts
+
+```typescript
+// 📁 utils/constants.ts
+// 🎯 管理所有程序相关的常量
+
 import { PublicKey } from "@solana/web3.js"
 
+// 🏭 质押程序ID - 从环境变量读取
 export const PROGRAM_ID = new PublicKey(
   process.env.NEXT_PUBLIC_STAKE_PROGRAM_ID ?? ""
 )
-```
 
-这是我们在上述指示中使用的程序`ID`。确保你的`env.local`文件中有正确的程序`ID`。
-
-`stake` 指令应该准备就绪了，接下来我们要创建一笔交易，添加指令，然后发送。
-
-```js
-const transaction = new Transaction().add(stakeInstruction)
-
-const signature = await walletAdapter.sendTransaction(transaction, connection)
-```
-
-由于这是一个等待操作，确保在 `handleStake` 回调中添加 `async` 关键字。实际上，这三个函数都应该是异步回调函数。
-
-我们可以进行检查以确认是否已完成，因此让我们获取最新的区块哈希并确认交易。
-
-```js
-const latestBlockhash = await connection.getLatestBlockhash()
-
-await connection.confirmTransaction(
-          {
-            blockhash: latestBlockhash.blockhash,
-            lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-            signature: signature,
-          },
-          "finalized"
-        )
-      } catch (error) {
-        console.log(error)
-      }
-
-await checkStakingStatus()
-```
-
-确认交易后，我们可以检查是否仍在质押，因此让我们将此功能添加到 `handleStake` 代码块的顶部。
-
-```js
-const checkStakingStatus = useCallback(async () => {
-    if (!walletAdapter.publicKey || !nftTokenAccount) {
-      return
-    }
-```
-
-我们还需要将 `walletAdapter` 和 `connection` 添加为 `handleStake` 回调的依赖项。
-
-我们需要添加一些状态字段，所以向上滚动并添加质押状态的相关字段。
-
-```js
-const [isStaking, setIsStaking] = useState(isStaked)
-```
-
-我们还要将参数 `StakeOptionsDisplay` 从 `isStaking` 改为 `isStaked`，否则我们的状态无法正常工作。
-
-同时，我们还需要在 `utils` 中创建一个名为 `accounts.ts` 的新文件，并从我们的`NFT`质押程序`utils`文件夹中复制文件过来。可能还需要安装我们的`borsh`库。
-
-我们之所以要复制这些内容，是因为每次检查状态时，我们都要查看抵押账户的状态，并确认抵押的价值。
-
-接下来，在 `checkStakingStatus` 的回调函数中，我们要调用 `getStakeAccount`。
-
-```js
-const account = await getStakeAccount(
-        connection,
-        walletAdapter.publicKey,
-        nftTokenAccount
-      )
-
-setIsStaking(account.state === 0)
-    } catch (e) {
-      console.log("error:", e)
-    }
-```
-
-既然我们要发送多个交易，请继续设置一个辅助函数来确认我们的交易。我们可以将上述代码粘贴进去。
-
-```js
-const sendAndConfirmTransaction = useCallback(
-    async (transaction: Transaction) => {
-      try {
-            const signature = await walletAdapter.sendTransaction(
-              transaction,
-              connection
-            )
-            const latestBlockhash = await connection.getLatestBlockhash()
-            await connection.confirmTransaction(
-              {
-                blockhash: latestBlockhash.blockhash,
-                lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-                signature: signature,
-              },
-              "finalized"
-            )
-          } catch (error) {
-            console.log(error)
-          }
-
-          await checkStakingStatus()
-    },
-    [walletAdapter, connection]
-  )
-```
-
-现在，在 `handleStake` 函数中只需调用 `sendAndConfirmTransaction` 即可。
-
-**前端索赔/兑换**
-
-现在就可以进行解除质押和领取奖励了。这两者实际上是相同的操作，不过增加了一个复杂的环节：我们是否需要为用户创建代币账户，用于存放他们即将获得的奖励代币。
-
-下面我们将解决 `handleClaim` 函数。
-
-首先，使用与之前相同的警报检查钱包适配器是否已连接并具有公钥。
-
-接着我们要检查奖励的关联令牌账户是否存在：
-
-```js
-const userStakeATA = await getAssociatedTokenAddress(
-      STAKE_MINT,
-      walletAdapter.publicKey
-    )
-```
-
-请快速查看我们创建的 `constants.ts` 文件，并为薄荷地址添加以下代码，因为我们需要 `STAKE_MINT` 的值：
-
-```js
+// 🪙 质押代币铸币地址 - BLD代币
 export const STAKE_MINT = new PublicKey(
   process.env.NEXT_PUBLIC_STAKE_MINT_ADDRESS ?? ""
 )
+
+// 💡 提示：这些地址会在.env.local中配置
+console.log("📍 程序ID:", PROGRAM_ID.toString())
+console.log("🪙 代币地址:", STAKE_MINT.toString())
 ```
 
-当我们拥有了`ATA`后，我们需要调用 `getAccountInfo` 函数，它会返回一个账户或`null`：
+### 🔐 配置.env.local
 
-`const account = await connection.getAccountInfo(userStakeATA)`
+```bash
+# 📁 .env.local
+# ⚠️ 确保这些值与你部署的程序匹配！
 
-随后，我们创建交易并检查是否存在一个账户，如果没有，我们调用 `createAssociatedTokenAccountInstruction` 函数；否则，我们调用 `createRedeemInstruction` 函数。
+# 🏭 质押程序地址
+NEXT_PUBLIC_STAKE_PROGRAM_ID=你的质押程序ID
 
-```js
-const transaction = new Transaction()
+# 🪙 BLD代币地址
+NEXT_PUBLIC_STAKE_MINT_ADDRESS=你的BLD代币地址
 
-    if (!account) {
-      transaction.add(
-        createAssociatedTokenAccountInstruction(
-          walletAdapter.publicKey,
-          userStakeATA,
-          walletAdapter.publicKey,
-          STAKE_MINT
-        )
-      )
-    }
-
-    transaction.add(
-      createRedeemInstruction(
-        walletAdapter.publicKey,
-        nftTokenAccount,
-        nftData.mint.address,
-        userStakeATA,
-        TOKEN_PROGRAM_ID,
-        PROGRAM_ID
-      )
-    )
+# 🌐 RPC端点（可选）
+NEXT_PUBLIC_RPC_ENDPOINT=https://api.devnet.solana.com
 ```
 
-现在我们可以调用上面创建的辅助事务确认函数。
+---
 
-```js
-await sendAndConfirmTransaction(transaction)
-  }, [walletAdapter, connection, nftData, nftTokenAccount])
-```
+## ⚡ Step 2: 实现质押功能
 
-最后，别忘了将依赖项 `walletAdapter` 和 `connection` 添加到回调函数中。
+### 🎮 更新StakeOptionsDisplay组件
 
-**前端解除质押操作**
-
-对于 `handleUnstake` 函数，我们要确保与其他函数一样使用异步处理。你可以直接从 `handleClaim` 复制以下内容：
-
-```js
-if (
-      !walletAdapter.connected ||
-      !walletAdapter.publicKey ||
-      !nftTokenAccount
-    ) {
-      alert("请连接您的钱包")
-      return
-    }
-
-    const userStakeATA = await getAssociatedTokenAddress(
-      STAKE_MINT,
-      walletAdapter.publicKey
-    )
-
-    const account = await connection.getAccountInfo(userStakeATA)
-
-    const transaction = new Transaction()
-
-    if (!account) {
-      transaction.add(
-        createAssociatedTokenAccountInstruction(
-          walletAdapter.publicKey,
-          userStakeATA,
-          walletAdapter.publicKey,
-          STAKE_MINT
-        )
-      )
-    }
-```
-
-接下来，我们将向交易中添加指令，并再次调用辅助函数：
-
-```js
-transaction.add(
-      createUnstakeInstruction(
-        walletAdapter.publicKey,
-        nftTokenAccount,
-        nftData.address,
-        nftData.edition.address,
-        STAKE_MINT,
-        userStakeATA,
-        TOKEN_PROGRAM_ID,
-        METADATA_PROGRAM_ID,
-        PROGRAM_ID
-      )
-    )
-
-    await sendAndConfirmTransaction(transaction)
-  }
-```
-
-**页面编辑的股份部分**
-
-我们继续转到 `stake.tsx` 文件（位于 `//pages/stake.tsx`）并进行一些与上述内容相关的修改。
-
-首先，根据我们之前的编辑，我们需要将 `isStaking` 的使用更改为 `isStaked`。这项修改应在 `<StakeOptionsDisplay>` 组件中进行。我们还需要添加一个名为 `nftData` 的字段，并将其赋值为 `nftData`，我们还需要一个状态来存储这个值。
-
-```ts
-const [nftData, setNftData] = useState<any>()`
-```
-
-目前，我们还没有实际的数据。我们将使用一个 `useEffect` 钩子，在其中调用 `metaplex`，并通过铸币地址找到 `NFT` 数据。
-
-```js
-useEffect(() => {
-    const metaplex = Metaplex.make(connection).use(
-      walletAdapterIdentity(walletAdapter)
-    )
-
-    try {
-      metaplex
-        .nfts()
-        .findByMint({ mintAddress: mint })
-        .then((nft) => {
-          console.log("在质押页面上的 NFT 数据:", nft)
-          setNftData(nft)
-        })
-    } catch (e) {
-      console.log("获取 NFT 时发生错误:", e)
-    }
-  }, [connection, walletAdapter])
-```
-
-不要忘了像我们之前所做的那样，获取一个连接和钱包适配器。
-
-现在一切准备就绪，可以进行测试了。运行 `npm run dev`，然后在浏览器中打开本地主机。赶快试试，点击按钮吧！🔘 ⏏️ 🆒
-
-**还需要进行一些编辑**
-
-似乎还有几个方面可能需要改进。让我们回到 `StakeOptionsDisplay` 文件，并在 `handleStake` 函数之前添加以下的 `useEffect` 钩子。
-
-```js
-useEffect(() => {
-    checkStakingStatus()
-
-    if (nftData) {
-      connection
-        .getTokenLargestAccounts(nftData.mint.address)
-        .then((accounts) => setNftTokenAccount(accounts.value[0].address))
-    }
-  }, [nftData, walletAdapter, connection])
-```
-
-这是一个快速检查，确认我们是否有 `NFT` 数据，如果有的话，就为 `NFT` 代币账户设置值。这是一个 `NFT`，只有一个，所以它会是第一个地址，因此索引值为 `'0'`。
-
-此外，在所有三个回调函数中，我们还需要将 `nftData` 添加为依赖项。
-
-最后，在 `handleStake` 中，在创建交易之前添加以下代码：
-
-```js
-const [stakeAccount] = PublicKey.findProgramAddressSync(
-      [walletAdapter.publicKey.toBuffer(), nftTokenAccount.toBuffer()],
-      PROGRAM_ID
-    )
-
-const transaction = new Transaction()
-
-const account = await connection.getAccountInfo(stakeAccount)
-    if (!account) {
-      transaction.add(
-        createInitializeStakeAccountInstruction(
-          walletAdapter.publicKey,
-          nftTokenAccount,
-          PROGRAM_ID
-        )
-      )
-    }
-```
-
-我们需要一个质押账户，也就是一个程序驱动的账户（`PDA`），用于在程序中存储有关你的质押状态的数据。如果我们没有这样的账户，上述代码会为我们初始化它。
-
-终于，我们完成了核心部分 `4`。这最后的部分有些杂乱，为确保没有遗漏任何东西，可以将整个 `StakeOptionsDisplay` 文件粘贴下来进行仔细检查。
-
-如果你想进一步改进代码或有任何其他问题，请随时提出。
-
-```js
+```typescript
+// 📁 components/StakeOptionsDisplay.tsx
 import { VStack, Text, Button } from "@chakra-ui/react"
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { PublicKey, Transaction } from "@solana/web3.js"
@@ -383,74 +134,116 @@ import { PROGRAM_ID as METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-toke
 import { PROGRAM_ID, STAKE_MINT } from "../utils/constants"
 import { getStakeAccount } from "../utils/accounts"
 
+// 🎯 组件属性接口
+interface StakeOptionsProps {
+  nftData: any           // NFT元数据
+  isStaked: boolean      // 初始质押状态
+  daysStaked: number     // 质押天数
+  totalEarned: number    // 总收益
+  claimable: number      // 可领取数量
+}
+
 export const StakeOptionsDisplay = ({
   nftData,
   isStaked,
   daysStaked,
   totalEarned,
   claimable,
-}: {
-  nftData: any
-  isStaked: boolean
-  daysStaked: number
-  totalEarned: number
-  claimable: number
-}) => {
+}: StakeOptionsProps) => {
+  // 🔗 钱包和连接
   const walletAdapter = useWallet()
   const { connection } = useConnection()
 
+  // 📊 状态管理
   const [isStaking, setIsStaking] = useState(isStaked)
   const [nftTokenAccount, setNftTokenAccount] = useState<PublicKey>()
 
+  // 🔍 检查质押状态
   const checkStakingStatus = useCallback(async () => {
     if (!walletAdapter.publicKey || !nftTokenAccount) {
+      console.log("⚠️ 缺少必要信息")
       return
     }
 
     try {
+      console.log("🔍 检查质押状态...")
+
+      // 获取质押账户信息
       const account = await getStakeAccount(
         connection,
         walletAdapter.publicKey,
         nftTokenAccount
       )
 
-      console.log("stake account:", account)
+      console.log("📊 质押账户:", account)
 
+      // 更新状态（0 = 已质押）
       setIsStaking(account.state === 0)
+
+      console.log("✅ 状态更新:", account.state === 0 ? "已质押" : "未质押")
     } catch (e) {
-      console.log("error:", e)
+      console.error("❌ 检查状态失败:", e)
     }
   }, [walletAdapter, connection, nftTokenAccount])
 
+  // 🚀 初始化Effect
   useEffect(() => {
+    console.log("🎬 组件初始化...")
     checkStakingStatus()
 
     if (nftData) {
+      // 获取NFT的代币账户
+      console.log("🔍 查找NFT代币账户...")
       connection
         .getTokenLargestAccounts(nftData.mint.address)
-        .then((accounts) => setNftTokenAccount(accounts.value[0].address))
+        .then((accounts) => {
+          const tokenAccount = accounts.value[0].address
+          console.log("💳 NFT代币账户:", tokenAccount.toString())
+          setNftTokenAccount(tokenAccount)
+        })
     }
   }, [nftData, walletAdapter, connection])
 
-  const handleStake = useCallback(async () => {
-    if (
-      !walletAdapter.connected ||
-      !walletAdapter.publicKey ||
-      !nftTokenAccount
-    ) {
-      alert("Please connect your wallet")
-      return
-    }
+  // ... 继续下面的handleStake等函数
+}
+```
 
+### 🎯 实现质押处理函数
+
+```typescript
+// 🎯 处理质押操作
+const handleStake = useCallback(async () => {
+  console.log("🚀 开始质押流程...")
+
+  // 🔍 Step 1: 验证钱包连接
+  if (!walletAdapter.connected || !walletAdapter.publicKey || !nftTokenAccount) {
+    alert("❌ 请先连接钱包！")
+    return
+  }
+
+  console.log("✅ 钱包已连接:", walletAdapter.publicKey.toString())
+
+  try {
+    // 🔑 Step 2: 派生质押账户PDA
     const [stakeAccount] = PublicKey.findProgramAddressSync(
-      [walletAdapter.publicKey.toBuffer(), nftTokenAccount.toBuffer()],
+      [
+        walletAdapter.publicKey.toBuffer(),  // 用户公钥
+        nftTokenAccount.toBuffer()           // NFT账户
+      ],
       PROGRAM_ID
     )
 
+    console.log("📍 质押账户PDA:", stakeAccount.toString())
+
+    // 📦 Step 3: 创建交易
     const transaction = new Transaction()
 
+    // 🔍 Step 4: 检查质押账户是否存在
     const account = await connection.getAccountInfo(stakeAccount)
     if (!account) {
+      console.log("📝 需要初始化质押账户...")
+
+      // 添加初始化指令
       transaction.add(
         createInitializeStakeAccountInstruction(
           walletAdapter.publicKey,
@@ -458,175 +251,453 @@ export const StakeOptionsDisplay = ({
           PROGRAM_ID
         )
       )
+    } else {
+      console.log("✅ 质押账户已存在")
     }
 
+    // ⚡ Step 5: 添加质押指令
+    console.log("📝 添加质押指令...")
     const stakeInstruction = createStakingInstruction(
-      walletAdapter.publicKey,
-      nftTokenAccount,
-      nftData.mint.address,
-      nftData.edition.address,
-      TOKEN_PROGRAM_ID,
-      METADATA_PROGRAM_ID,
-      PROGRAM_ID
+      walletAdapter.publicKey,     // 用户
+      nftTokenAccount,             // NFT账户
+      nftData.mint.address,        // NFT铸币
+      nftData.edition.address,     // NFT版本
+      TOKEN_PROGRAM_ID,            // Token程序
+      METADATA_PROGRAM_ID,         // 元数据程序
+      PROGRAM_ID                   // 质押程序
     )
 
     transaction.add(stakeInstruction)
 
+    // 🚀 Step 6: 发送交易
+    console.log("📤 发送交易...")
     await sendAndConfirmTransaction(transaction)
-  }, [walletAdapter, connection, nftData, nftTokenAccount])
 
-  const sendAndConfirmTransaction = useCallback(
-    async (transaction: Transaction) => {
-      try {
-        const signature = await walletAdapter.sendTransaction(
-          transaction,
-          connection
-        )
-        const latestBlockhash = await connection.getLatestBlockhash()
-        await connection.confirmTransaction(
-          {
-            blockhash: latestBlockhash.blockhash,
-            lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-            signature: signature,
-          },
-          "finalized"
-        )
-      } catch (error) {
-        console.log(error)
-      }
+    console.log("🎉 质押成功！")
+  } catch (error) {
+    console.error("❌ 质押失败:", error)
+    alert("质押失败，请重试！")
+  }
+}, [walletAdapter, connection, nftData, nftTokenAccount])
+```
 
+### 🛠️ 创建交易辅助函数
+
+```typescript
+// 🔧 发送并确认交易的辅助函数
+const sendAndConfirmTransaction = useCallback(
+  async (transaction: Transaction) => {
+    try {
+      console.log("📤 准备发送交易...")
+
+      // 🚀 发送交易
+      const signature = await walletAdapter.sendTransaction(
+        transaction,
+        connection
+      )
+
+      console.log("📝 交易签名:", signature)
+
+      // ⏳ 获取最新区块哈希
+      const latestBlockhash = await connection.getLatestBlockhash()
+
+      // ✅ 确认交易
+      console.log("⏳ 等待确认...")
+      await connection.confirmTransaction(
+        {
+          blockhash: latestBlockhash.blockhash,
+          lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+          signature: signature,
+        },
+        "finalized"  // 等待最终确认
+      )
+
+      console.log("✅ 交易已确认！")
+
+      // 🔄 更新状态
       await checkStakingStatus()
-    },
-    [walletAdapter, connection]
-  )
 
-  const handleUnstake = useCallback(async () => {
-    if (
-      !walletAdapter.connected ||
-      !walletAdapter.publicKey ||
-      !nftTokenAccount
-    ) {
-      alert("Please connect your wallet")
-      return
+    } catch (error) {
+      console.error("❌ 交易失败:", error)
+      alert("交易失败，请重试！")
     }
+  },
+  [walletAdapter, connection]
+)
+```
 
+---
+
+## 💰 Step 3: 实现领取奖励功能
+
+```typescript
+// 💰 处理领取奖励
+const handleClaim = useCallback(async () => {
+  console.log("💎 开始领取奖励...")
+
+  // 🔍 验证钱包
+  if (!walletAdapter.connected || !walletAdapter.publicKey || !nftTokenAccount) {
+    alert("❌ 请先连接钱包！")
+    return
+  }
+
+  try {
+    // 💳 Step 1: 获取用户的BLD代币账户
     const userStakeATA = await getAssociatedTokenAddress(
-      STAKE_MINT,
-      walletAdapter.publicKey
+      STAKE_MINT,                  // BLD代币地址
+      walletAdapter.publicKey       // 用户地址
     )
 
+    console.log("💳 用户代币账户:", userStakeATA.toString())
+
+    // 🔍 Step 2: 检查账户是否存在
     const account = await connection.getAccountInfo(userStakeATA)
 
+    // 📦 Step 3: 创建交易
     const transaction = new Transaction()
 
+    // 🏗️ Step 4: 如果代币账户不存在，创建它
     if (!account) {
+      console.log("📝 需要创建代币账户...")
+
       transaction.add(
         createAssociatedTokenAccountInstruction(
-          walletAdapter.publicKey,
-          userStakeATA,
-          walletAdapter.publicKey,
-          STAKE_MINT
+          walletAdapter.publicKey,  // 付款人
+          userStakeATA,             // 新账户地址
+          walletAdapter.publicKey,  // 账户所有者
+          STAKE_MINT                // 代币类型
         )
       )
     }
 
-    transaction.add(
-      createUnstakeInstruction(
-        walletAdapter.publicKey,
-        nftTokenAccount,
-        nftData.address,
-        nftData.edition.address,
-        STAKE_MINT,
-        userStakeATA,
-        TOKEN_PROGRAM_ID,
-        METADATA_PROGRAM_ID,
-        PROGRAM_ID
-      )
-    )
-
-    await sendAndConfirmTransaction(transaction)
-  }, [walletAdapter, connection, nftData, nftTokenAccount])
-
-  const handleClaim = useCallback(async () => {
-    if (
-      !walletAdapter.connected ||
-      !walletAdapter.publicKey ||
-      !nftTokenAccount
-    ) {
-      alert("Please connect your wallet")
-      return
-    }
-
-    const userStakeATA = await getAssociatedTokenAddress(
-      STAKE_MINT,
-      walletAdapter.publicKey
-    )
-
-    const account = await connection.getAccountInfo(userStakeATA)
-
-    const transaction = new Transaction()
-
-    if (!account) {
-      transaction.add(
-        createAssociatedTokenAccountInstruction(
-          walletAdapter.publicKey,
-          userStakeATA,
-          walletAdapter.publicKey,
-          STAKE_MINT
-        )
-      )
-    }
-
+    // 💎 Step 5: 添加领取奖励指令
+    console.log("📝 添加领取奖励指令...")
     transaction.add(
       createRedeemInstruction(
-        walletAdapter.publicKey,
-        nftTokenAccount,
-        nftData.mint.address,
-        userStakeATA,
-        TOKEN_PROGRAM_ID,
-        PROGRAM_ID
+        walletAdapter.publicKey,  // 用户
+        nftTokenAccount,          // NFT账户
+        nftData.mint.address,     // NFT铸币
+        userStakeATA,             // 接收代币的账户
+        TOKEN_PROGRAM_ID,         // Token程序
+        PROGRAM_ID                // 质押程序
       )
     )
 
+    // 🚀 Step 6: 发送交易
     await sendAndConfirmTransaction(transaction)
-  }, [walletAdapter, connection, nftData, nftTokenAccount])
 
+    console.log("🎉 成功领取奖励！")
+    alert(`成功领取 ${claimable} $BLD！`)
+
+  } catch (error) {
+    console.error("❌ 领取失败:", error)
+    alert("领取失败，请重试！")
+  }
+}, [walletAdapter, connection, nftData, nftTokenAccount, claimable])
+```
+
+---
+
+## 🔓 Step 4: 实现解除质押功能
+
+```typescript
+// 🔓 处理解除质押
+const handleUnstake = useCallback(async () => {
+  console.log("🔓 开始解除质押...")
+
+  // 🔍 验证钱包
+  if (!walletAdapter.connected || !walletAdapter.publicKey || !nftTokenAccount) {
+    alert("❌ 请先连接钱包！")
+    return
+  }
+
+  try {
+    // 💳 Step 1: 获取用户的BLD代币账户
+    const userStakeATA = await getAssociatedTokenAddress(
+      STAKE_MINT,
+      walletAdapter.publicKey
+    )
+
+    // 🔍 Step 2: 检查账户
+    const account = await connection.getAccountInfo(userStakeATA)
+
+    // 📦 Step 3: 创建交易
+    const transaction = new Transaction()
+
+    // 🏗️ Step 4: 如果需要，创建代币账户
+    if (!account) {
+      console.log("📝 创建代币账户...")
+      transaction.add(
+        createAssociatedTokenAccountInstruction(
+          walletAdapter.publicKey,
+          userStakeATA,
+          walletAdapter.publicKey,
+          STAKE_MINT
+        )
+      )
+    }
+
+    // 🔓 Step 5: 添加解除质押指令
+    console.log("📝 添加解除质押指令...")
+    transaction.add(
+      createUnstakeInstruction(
+        walletAdapter.publicKey,     // 用户
+        nftTokenAccount,             // NFT账户
+        nftData.mint.address,        // NFT铸币（注意：这里用mint.address）
+        nftData.edition.address,     // NFT版本
+        STAKE_MINT,                  // BLD代币
+        userStakeATA,                // 接收代币账户
+        TOKEN_PROGRAM_ID,            // Token程序
+        METADATA_PROGRAM_ID,         // 元数据程序
+        PROGRAM_ID                   // 质押程序
+      )
+    )
+
+    // 🚀 Step 6: 发送交易
+    await sendAndConfirmTransaction(transaction)
+
+    console.log("🎉 解除质押成功！")
+    alert("成功解除质押！你的NFT已经自由了！")
+
+  } catch (error) {
+    console.error("❌ 解除质押失败:", error)
+    alert("解除质押失败，请重试！")
+  }
+}, [walletAdapter, connection, nftData, nftTokenAccount])
+```
+
+---
+
+## 🎨 Step 5: 完善页面交互
+
+### 📝 更新stake.tsx页面
+
+```tsx
+// 📁 pages/stake.tsx
+import { useEffect, useState } from "react"
+import { useConnection, useWallet } from "@solana/wallet-adapter-react"
+import { Metaplex, walletAdapterIdentity } from "@metaplex-foundation/js"
+import { PublicKey } from "@solana/web3.js"
+import { StakeOptionsDisplay } from "../components/StakeOptionsDisplay"
+
+const Stake = ({ mint, imageSrc }) => {
+  const { connection } = useConnection()
+  const walletAdapter = useWallet()
+
+  // 📊 NFT数据状态
+  const [nftData, setNftData] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  // 🎯 获取NFT元数据
+  useEffect(() => {
+    const fetchNftData = async () => {
+      console.log("🔍 获取NFT数据...")
+      setLoading(true)
+
+      try {
+        // 🏗️ 创建Metaplex实例
+        const metaplex = Metaplex.make(connection)
+          .use(walletAdapterIdentity(walletAdapter))
+
+        // 🔍 查找NFT
+        const nft = await metaplex
+          .nfts()
+          .findByMint({ mintAddress: mint })
+
+        console.log("📦 NFT数据:", nft)
+        setNftData(nft)
+
+      } catch (error) {
+        console.error("❌ 获取NFT失败:", error)
+        alert("无法获取NFT信息！")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (connection && walletAdapter.connected) {
+      fetchNftData()
+    }
+  }, [connection, walletAdapter, mint])
+
+  // 🎨 渲染界面
   return (
-    <VStack
-      bgColor="containerBg"
-      borderRadius="20px"
-      padding="20px 40px"
-      spacing={5}
-    >
-      <Text
-        bgColor="containerBgSecondary"
-        padding="4px 8px"
-        borderRadius="20px"
-        color="bodyText"
-        as="b"
-        fontSize="sm"
-      >
-        {isStaking
-          ? `STAKING ${daysStaked} DAY${daysStaked === 1 ? "" : "S"}`
-          : "READY TO STAKE"}
-      </Text>
-      <VStack spacing={-1}>
-        <Text color="white" as="b" fontSize="4xl">
-          {isStaking ? `${totalEarned} $BLD` : "0 $BLD"}
-        </Text>
-        <Text color="bodyText">
-          {isStaking ? `${claimable} $BLD earned` : "earn $BLD by staking"}
-        </Text>
-      </VStack>
-      <Button
-        onClick={isStaking ? handleClaim : handleStake}
-        bgColor="buttonGreen"
-        width="200px"
-      >
-        <Text as="b">{isStaking ? "claim $BLD" : "stake buildoor"}</Text>
-      </Button>
-      {isStaking ? <Button onClick={handleUnstake}>unstake</Button> : null}
-    </VStack>
+    <div className="container">
+      {/* 🖼️ 左侧：NFT展示 */}
+      <div className="nft-display">
+        <img src={imageSrc} alt="NFT" />
+        {loading && <p>加载中...</p>}
+      </div>
+
+      {/* 🎮 右侧：质押选项 */}
+      {nftData && (
+        <StakeOptionsDisplay
+          nftData={nftData}
+          isStaked={false}  // 初始状态
+          daysStaked={0}
+          totalEarned={0}
+          claimable={0}
+        />
+      )}
+    </div>
   )
 }
+
+export default Stake
 ```
+
+---
+
+## 💡 实用技巧与最佳实践
+
+### 🎯 技巧1：错误处理
+
+```typescript
+// 🛡️ 创建统一的错误处理
+const handleError = (error: any, operation: string) => {
+  console.error(`❌ ${operation}失败:`, error)
+
+  // 解析错误类型
+  if (error.message?.includes("insufficient")) {
+    alert("余额不足！")
+  } else if (error.message?.includes("User rejected")) {
+    alert("用户取消了操作")
+  } else {
+    alert(`${operation}失败，请重试！`)
+  }
+}
+```
+
+### 🎯 技巧2：状态管理
+
+```typescript
+// 📊 使用更详细的状态管理
+const [stakingState, setStakingState] = useState({
+  isStaking: false,
+  isLoading: false,
+  lastAction: null,
+  error: null
+})
+```
+
+### 🎯 技巧3：用户反馈
+
+```typescript
+// 🎨 添加加载状态
+<Button
+  onClick={handleStake}
+  isLoading={isProcessing}
+  loadingText="质押中..."
+  disabled={!nftData}
+>
+  质押NFT
+</Button>
+```
+
+---
+
+## 🧪 测试清单
+
+### ✅ 测试步骤
+
+```bash
+# 1️⃣ 启动开发服务器
+npm run dev
+
+# 2️⃣ 打开浏览器
+open http://localhost:3000
+
+# 3️⃣ 测试流程
+# □ 连接钱包
+# □ 选择NFT
+# □ 点击质押
+# □ 等待一段时间
+# □ 领取奖励
+# □ 解除质押
+```
+
+### 🔍 调试技巧
+
+```typescript
+// 🐛 在浏览器控制台查看详细日志
+console.log("当前状态:", {
+  wallet: walletAdapter.publicKey?.toString(),
+  nft: nftTokenAccount?.toString(),
+  isStaking,
+  nftData
+})
+```
+
+---
+
+## 🚨 常见问题解决
+
+### ❌ 问题1：交易失败
+
+```typescript
+// 检查RPC连接
+if (!connection) {
+  console.error("❌ 没有RPC连接")
+  return
+}
+
+// 检查网络
+const network = await connection.getVersion()
+console.log("🌐 网络版本:", network)
+```
+
+### ❌ 问题2：账户不存在
+
+```typescript
+// 总是先检查账户
+const account = await connection.getAccountInfo(address)
+if (!account) {
+  console.log("📝 需要创建账户")
+  // 添加创建账户指令
+}
+```
+
+---
+
+## 🎓 知识总结
+
+### 📚 核心概念回顾
+
+```
+┌────────────────────────────────────┐
+│      🏆 完成的功能清单                │
+├────────────────────────────────────┤
+│ ✅ 质押NFT到程序                     │
+│ ✅ 实时检查质押状态                  │
+│ ✅ 领取BLD代币奖励                   │
+│ ✅ 解除质押获取NFT                   │
+│ ✅ 自动创建代币账户                  │
+│ ✅ 完整的错误处理                    │
+└────────────────────────────────────┘
+```
+
+---
+
+## 🚀 恭喜完成！
+
+**太棒了！** 🎊 你已经成功构建了一个**完整的NFT质押系统**！
+
+### 🎯 你的成就
+
+- 🏗️ 构建了完整的前端界面
+- 🔗 实现了与智能合约的交互
+- 💰 创建了代币奖励系统
+- 🎮 提供了流畅的用户体验
+
+### 🔮 接下来可以做什么？
+
+1. **添加更多功能** - 批量质押、排行榜
+2. **优化UI** - 动画、实时更新
+3. **部署到主网** - 让真实用户使用
+4. **创建移动版** - 支持移动钱包
+
+> 💬 **记住：** 这是Core 4的最后一部分，你已经掌握了构建完整DApp的所有技能！
+
+---
+
+**继续探索，成为下一个Web3独角兽的创始人！** 🦄🚀✨
