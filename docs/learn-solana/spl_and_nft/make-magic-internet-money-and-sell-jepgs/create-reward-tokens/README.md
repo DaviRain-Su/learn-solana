@@ -1,66 +1,133 @@
----
-sidebar_position: 41
-sidebar_label: 🎨 创建奖励代币
-sidebar_class_name: green
-tags:
-  - displayings-nfts
-  - solana
-  - nft
-  - metaplex
-  - spl-token
+# 🎨 创建奖励代币 - 打造你的专属Token王国! 🚀
+
+> 💡 **本章亮点**: 从零开始创建你的第一个Solana代币，让你的NFT生态更加完整！
+
 ---
 
-# 🎨 创建奖励代币
+## 🎯 学习目标
 
-既然我们已经铸造了一个`NFT`，那么接下来我们要探讨如何铸造一系列的`NFT`。为了达成这个目标，我们将采用`Candy Machine`——一款在`Solana`上广泛使用的程序，允许创作者将其资产上链。`Candy Machine`在`Solana`上受到欢迎的原因在于，它具备了如机器人防护和安全随机化等实用功能。现在我们可以回归到我们自定义的`NFT`质押应用上来，借助我们在代币程序和`Candy Machine`上的经验来构建这个应用。
+在本教程中，你将学会：
+- 🪙 创建自定义SPL代币
+- 🖼️ 为代币添加元数据和图片
+- 🍬 了解Candy Machine的强大功能
+- 📦 管理代币相关文件和配置
 
-请按照以下步骤操作：
+## 🌟 为什么选择Candy Machine？
 
-1. 在根目录中创建名为`tokens`的新文件夹。
-2. 在`tokens`文件夹内，我们要创建`2`个子文件夹，分别命名为`bld`和`candy-machine`，它们的结构应如下图所示：
+既然我们已经成功铸造了第一个`NFT`（恭喜你！🎉），接下来让我们挑战更有趣的内容——铸造一整个系列的`NFT`！
 
-   ![](./img/tokens.png)
+**Candy Machine的超能力** ⚡：
+- 🤖 **机器人防护** - 告别恶意抢购
+- 🎲 **安全随机化** - 公平分发，人人有机会
+- ⚙️ **自动化铸造** - 像糖果机一样简单便捷
+- 🔒 **内置安全性** - Solana生态的信赖之选
 
-我们这样做的目的是整理建立`Builder`时所需的奖励代币和与我们的`NFT`有关的内容。
+> 💡 **小贴士**: Candy Machine就像是NFT世界的自动售货机，投币（SOL）即可获得惊喜（NFT）！
 
-3. 接下来，我们要创建资源文件夹，用于存放代币的图像。请进入你的`bld`文件夹，并创建名为`assets`的新文件夹。同时，在你的`bld`文件夹内，创建名为`index.ts`的新文件。目录结构应如下所示：
+## 📁 项目结构搭建 - 让代码有个温馨的家
+
+### 步骤 1: 创建主文件夹 🏗️
 
 ```bash
-├── styles
-├── tokens
-│   ├── bld
-│   |   ├── assets
-│   |   ├── index.ts
+# 在项目根目录执行
+mkdir tokens
+cd tokens
 ```
 
-注意：确保你的`index.ts`文件位于`bld`文件夹中，而不是在`assets`文件夹中。
+### 步骤 2: 创建子文件夹 📂
 
-4. 你可能会发现`index.ts`文件被标记为红色，这是因为我们目前还没有任何代码。让我们通过向你的`index.ts`文件中添加以下代码来解决这个问题。我们还需将`initializeKeypair`文件移动到`bld`文件夹中，并在`bld/assets`文件夹中添加一张图片作为你的代币图片。
+```bash
+# 创建两个重要的子文件夹
+mkdir bld          # 🏆 Builder奖励代币
+mkdir candy-machine # 🍭 NFT相关内容
+```
 
-```ts
+你的目录结构应该像这样：
+
+```bash
+📦 项目根目录
+ ┣ 📂 styles
+ ┣ 📂 tokens
+ ┃ ┣ 📂 bld         # 💰 我们的奖励代币
+ ┃ ┗ 📂 candy-machine # 🎨 NFT配置
+```
+
+> 🎯 **最佳实践**: 保持文件结构清晰，未来的你会感谢现在有条理的自己！
+
+### 步骤 3: 搭建BLD代币框架 🏗️
+
+进入`bld`文件夹，创建必要的文件和文件夹：
+
+```bash
+cd bld
+mkdir assets    # 🖼️ 存放代币图片
+touch index.ts  # 📝 主程序文件
+```
+
+最终结构：
+
+```bash
+📦 tokens/bld
+ ┣ 📂 assets
+ ┃ ┗ 🖼️ unicorn.png  # 你的代币图片（可以是任何你喜欢的图片！）
+ ┗ 📄 index.ts        # 核心代码
+```
+
+> ⚠️ **注意事项**: 确保`index.ts`在`bld`文件夹中，而不是在`assets`里面！
+
+### 步骤 4: 修复红色警告 🚨
+
+看到`index.ts`文件显示红色了吗？别慌！这只是因为它还是空的。让我们添加一些代码让它活起来！
+
+## 💻 编写代码 - 让魔法开始！
+
+### 🎬 初始化设置
+
+首先，在`index.ts`中添加基础代码：
+
+```typescript
+// 🚀 导入必要的库 - 我们的工具箱
 import * as web3 from "@solana/web3.js";
 import * as token from "@solana/spl-token";
-import { initializeKeypair } from "./initializeKeypair";
+import { initializeKeypair } from "./initializeKeypair"; // 记得移动这个文件哦！
 
+/**
+ * 🎯 主函数 - 一切魔法的起点
+ */
 async function main() {
-  const connection = new web3.Connection(web3.clusterApiUrl("devnet"));
+  // 🌐 连接到Solana开发网
+  const connection = new web3.Connection(
+    web3.clusterApiUrl("devnet"),
+    "confirmed" // 添加确认级别，更稳定！
+  );
+
+  // 🔑 初始化钱包密钥对
   const payer = await initializeKeypair(connection);
+
+  console.log("✅ 钱包初始化成功!");
+  console.log("💰 钱包地址:", payer.publicKey.toString());
 }
 
+// 🚀 启动程序
 main()
   .then(() => {
-    console.log("Finished successfully");
+    console.log("🎉 程序执行成功！");
     process.exit(0);
   })
   .catch((error) => {
-    console.log(error);
+    console.error("❌ 出错了:", error);
     process.exit(1);
   });
 ```
 
-太棒了！现在我们已经有了初始代码，可以继续将下一段代码粘贴到你的`index.ts`文件中，你可以将其放在`main`函数的上方。
+> 💡 **专业提示**: 别忘了将`initializeKeypair.ts`文件从原位置移动到`bld`文件夹中！
 
-```ts
+### 🎨 添加代币创建功能
+
+现在，让我们添加创建代币的核心代码。在`main`函数**上方**添加：
+
+```typescript
+// 📚 导入更多强大的工具
 import * as fs from "fs";
 import {
   bundlrStorage,
@@ -74,233 +141,314 @@ import {
   createCreateMetadataAccountV2Instruction,
 } from "@metaplex-foundation/mpl-token-metadata";
 
-const TOKEN_NAME = "BUILD";
-const TOKEN_SYMBOL = "BLD";
-const TOKEN_DESCRIPTION = "A token for buildoors";
-const TOKEN_IMAGE_NAME = "unicorn.png"; // Replace unicorn.png with your image name
+// 🎨 定义你的代币属性 - 让它独一无二！
+const TOKEN_NAME = "BUILD";              // 代币名称
+const TOKEN_SYMBOL = "BLD";              // 代币符号（简称）
+const TOKEN_DESCRIPTION = "A token for buildoors"; // 描述
+const TOKEN_IMAGE_NAME = "unicorn.png";  // 🦄 图片名（换成你喜欢的！）
 const TOKEN_IMAGE_PATH = `tokens/bld/assets/${TOKEN_IMAGE_NAME}`;
 
+/**
+ * 🪙 创建BLD代币的核心函数
+ * @param connection - Solana网络连接
+ * @param payer - 付款账户
+ */
 async function createBldToken(
   connection: web3.Connection,
   payer: web3.Keypair
 ) {
-    // This will create a token with all the necessary inputs
+    console.log("🔨 开始创建代币...");
+
+    // 🏭 步骤1: 创建代币铸造账户
+    // 这就像是创建了一个"印钞机"
     const tokenMint = await token.createMint(
-        connection, // Connection
-        payer, // Payer
-        payer.publicKey, // Your wallet public key
-        payer.publicKey, // Freeze authority
-        2 // Decimals
+        connection,        // 网络连接
+        payer,            // 谁来付gas费
+        payer.publicKey,  // 铸造权限（谁能印钱）
+        payer.publicKey,  // 冻结权限（谁能冻结账户）
+        2                 // 小数位数（2位小数，如0.01 BLD）
     );
 
-    // Create a metaplex object so that we can create a metaplex metadata
+    console.log("✅ 代币铸造创建成功!");
+    console.log("🏷️ 代币地址:", tokenMint.toBase58());
+
+    // 🎨 步骤2: 设置Metaplex（用于管理NFT元数据）
     const metaplex = Metaplex.make(connection)
-        .use(keypairIdentity(payer))
+        .use(keypairIdentity(payer))  // 使用我们的身份
         .use(
-        bundlrStorage({
-            address: "https://devnet.bundlr.network",
-            providerUrl: "https://api.devnet.solana.com",
-            timeout: 60000,
-        })
+            bundlrStorage({
+                address: "https://devnet.bundlr.network",
+                providerUrl: "https://api.devnet.solana.com",
+                timeout: 60000,  // 60秒超时，避免网络问题
+            })
         );
 
-    // Read image file
+    console.log("📸 正在上传代币图片...");
+
+    // 🖼️ 步骤3: 读取并上传图片
     const imageBuffer = fs.readFileSync(TOKEN_IMAGE_PATH);
     const file = toMetaplexFile(imageBuffer, TOKEN_IMAGE_NAME);
     const imageUri = await metaplex.storage().upload(file);
 
-    // Upload the rest of offchain metadata
+    console.log("✅ 图片上传成功!");
+    console.log("🔗 图片链接:", imageUri);
+
+    // 📝 步骤4: 上传完整的元数据
     const { uri } = await metaplex
         .nfts()
         .uploadMetadata({
-        name: TOKEN_NAME,
-        description: TOKEN_DESCRIPTION,
-        image: imageUri,
+            name: TOKEN_NAME,
+            description: TOKEN_DESCRIPTION,
+            image: imageUri,
+            // 可以添加更多属性，如：
+            // external_url: "https://yourwebsite.com",
+            // attributes: [...]
         });
 
-    // Finding out the address where the metadata is stored
+    console.log("📋 元数据上传成功!");
+    console.log("🔗 元数据链接:", uri);
+
+    // 🔍 步骤5: 找到元数据的存储地址（PDA）
     const metadataPda = metaplex.nfts().pdas().metadata({mint: tokenMint});
+
+    // 📦 步骤6: 准备链上元数据
     const tokenMetadata = {
         name: TOKEN_NAME,
         symbol: TOKEN_SYMBOL,
         uri: uri,
-        sellerFeeBasisPoints: 0,
-        creators: null,
-        collection: null,
-        uses: null,
-    } as DataV2
+        sellerFeeBasisPoints: 0,  // 版税（0 = 0%）
+        creators: null,            // 创作者列表
+        collection: null,          // 所属集合
+        uses: null,               // 使用限制
+    } as DataV2;
 
-    const instruction = createCreateMetadataAccountV2Instruction({
-        metadata: metadataPda,
-        mint: tokenMint,
-        mintAuthority: payer.publicKey,
-        payer: payer.publicKey,
-        updateAuthority: payer.publicKey
-    },
-    {
-        createMetadataAccountArgsV2: {
-            data: tokenMetadata,
-            isMutable: true
+    // 🛠️ 步骤7: 创建元数据账户指令
+    const instruction = createCreateMetadataAccountV2Instruction(
+        {
+            metadata: metadataPda,
+            mint: tokenMint,
+            mintAuthority: payer.publicKey,
+            payer: payer.publicKey,
+            updateAuthority: payer.publicKey
+        },
+        {
+            createMetadataAccountArgsV2: {
+                data: tokenMetadata,
+                isMutable: true  // 允许后续更新
+            }
         }
-    })
+    );
 
-    const transaction = new web3.Transaction()
-    transaction.add(instruction)
+    // 📤 步骤8: 发送交易
+    console.log("📤 正在发送交易到链上...");
+    const transaction = new web3.Transaction();
+    transaction.add(instruction);
+
     const transactionSignature = await web3.sendAndConfirmTransaction(
-            connection,
-            transaction,
-            [payer]
-    )
-```
+        connection,
+        transaction,
+        [payer]
+    );
 
-这段代码将创建一个代币，并与其关联所有必需的输入。它还会读取图像文件，上传文件，并执行其他必要操作，从而为你的代币创建完整的元数据。
+    console.log("🎊 交易成功!");
+    console.log("📝 交易签名:", transactionSignature);
 
-通过上述步骤，你将能够在Solana上成功创建并管理你的代币。
+    // 💾 步骤9: 保存重要信息到本地
+    const cacheData = {
+        mint: tokenMint.toBase58(),
+        imageUri: imageUri,
+        metadataUri: uri,
+        tokenMetadata: metadataPda.toBase58(),
+        metadataTransaction: transactionSignature,
+        createdAt: new Date().toISOString()  // 添加时间戳
+    };
 
+    fs.writeFileSync(
+        "tokens/bld/cache.json",
+        JSON.stringify(cacheData, null, 2)  // 格式化JSON，更易读
+    );
 
-## 🥳 代码解析
+    console.log("💾 缓存文件已保存!");
 
-好的，我们逐一分析一下上述代码的各个部分。
-
-首先，我们通过调用 `createMint` 函数来创建并初始化一个新的代币铸造。你可以通过[这个链接](https://solana-labs.github.io/solana-program-library/token/js/modules.html#createMint?utm_source=buildspace.so&utm_medium=buildspace_project)了解更多有关该函数的信息。
-
-```ts
-// 这段代码将根据所有必要的输入创建一个代币
-const tokenMint = await token.createMint(
-  connection, // 连接信息
-  payer,      // 付款方
-  payer.publicKey, // 你的钱包公钥
-  payer.publicKey, // 冻结权限
-  2 // 小数位数
-);
-```
-
-接下来，我们创建一个`Metaplex`对象，以便我们可以创建`Metaplex`元数据，并将其上传到`BundlrStorage`中。
-
-```ts
-// 创建一个Metaplex对象，这样我们就可以创建Metaplex元数据了
-const metaplex = Metaplex.make(connection)
-  .use(keypairIdentity(payer))
-  .use(
-    bundlrStorage({
-      address: "https://devnet.bundlr.network",
-      providerUrl: "https://api.devnet.solana.com",
-      timeout: 60000,
-    })
-  );
-```
-
-这部分代码比较直观。我们正在尝试读取存储在`bld/assets`文件夹中的图像文件，并将元数据上传到存储空间中。
-
-```ts
-// 读取图像文件
-const imageBuffer = fs.readFileSync(TOKEN_IMAGE_PATH);
-const file = toMetaplexFile(imageBuffer, TOKEN_IMAGE_NAME);
-const imageUri = await metaplex.storage().upload(file);
-// 上传其余的离线元数据
-const { uri } = await metaplex
-  .nfts()
-  .uploadMetadata({
-    name: TOKEN_NAME,
-    description: TOKEN_DESCRIPTION,
-    image: imageUri,
-  });
-```
-
-一旦我们成功将图像上传到`Metaplex`，我们就可以通过调用以下部分来查找元数据存储的地址。
-
-```ts
-// 查找元数据存储的地址
-const metadataPda = metaplex.nfts().pdas().metadata({mint: tokenMint});
-const tokenMetadata = {
-    name: TOKEN_NAME,
-    symbol: TOKEN_SYMBOL,
-    uri: uri,
-    sellerFeeBasisPoints: 0,
-    creators: null,
-    collection: null,
-    uses: null,
-} as DataV2
-
-const instruction = createCreateMetadataAccountV2Instruction({
-    metadata: metadataPda,
-    mint: tokenMint,
-    mintAuthority: payer.publicKey,
-    payer: payer.publicKey,
-    updateAuthority: payer.publicKey
-},
-{
-    createMetadataAccountArgsV2: {
-        data: tokenMetadata,
-        isMutable: true
-    }
-})
-
-const transaction = new web3.Transaction()
-transaction.add(instruction)
-const transactionSignature = await web3.sendAndConfirmTransaction(
-    connection,
-    transaction,
-    [payer]
-)
-```
-
-这部分代码将创建一个代币，并将其所需的所有输入与其关联起来。它还会读取图像文件，上传文件，并完成为你的代币创建完整元数据所需的其他操作。
-
-通过这样的操作，你将能够在`Solana`上成功创建并管理你的代币。
-
-## 🫙 元数据的存储
-
-现在，我们已经创建了带有特定元数据的代币铸造（薄荷）。下一步我们要将这些元数据信息存储到我们的文件夹中。让我们看看如何做到这一点：
-
-就在你定义了 `transactionSignature` 的代码下方，添加以下代码。
-
-```ts
-fs.writeFileSync(
-  "tokens/bld/cache.json",
-  JSON.stringify({
-    mint: tokenMint.toBase58(),
-    imageUri: imageUri,
-    metadataUri: uri,
-    tokenMetadata: metadataPda.toBase58(),
-    metadataTransaction: transactionSignature,
-  })
-);
-```
-
-太棒了！这样就完成了 `createBldToken` 函数的编写。现在，我们可以在下面的主函数中调用它。你的 `main` 函数现在应该是这个样子的。
-
-```ts
-async function main() {
-  const connection = new web3.Connection(web3.clusterApiUrl("devnet"));
-  const payer = await initializeKeypair(connection);
-
-  await createBldToken(connection, payer);
+    return tokenMint;  // 返回代币地址，可能后续会用到
 }
 ```
 
-这样就可以了。你现在已经准备好了。让我们开始运行代码吧！
+### 🔧 更新主函数
 
-## 🚀 运行我们的代码
+更新你的`main`函数：
 
-首先，我们需要在`VS Code`中打开终端，并安装一个名为 `ts-node` 的模块，因为我们要运行一些`TypeScript`命令。在终端中输入 `npm install --save-dev ts-node`。然后，转到你的 `package.json` 文件，并将以下行添加到 `scripts` 部分。
+```typescript
+async function main() {
+    console.log("🚀 程序启动!");
+    console.log("=".repeat(50));
 
-```json
-"create-bld-token": "ts-node ./src/tokens/bld/index.ts"
+    // 🌐 连接到Solana开发网
+    const connection = new web3.Connection(
+        web3.clusterApiUrl("devnet"),
+        "confirmed"
+    );
+
+    // 🔑 初始化钱包
+    const payer = await initializeKeypair(connection);
+
+    // 💰 检查余额
+    const balance = await connection.getBalance(payer.publicKey);
+    console.log(`💰 钱包余额: ${balance / web3.LAMPORTS_PER_SOL} SOL`);
+
+    if (balance < 0.1 * web3.LAMPORTS_PER_SOL) {
+        console.log("⚠️ 余额不足！请先获取一些测试币:");
+        console.log("🔗 https://solfaucet.com");
+        return;
+    }
+
+    // 🪙 创建BLD代币
+    await createBldToken(connection, payer);
+
+    console.log("=".repeat(50));
+}
 ```
 
-现在你的配置应该是这个样子的。
+## 🚀 运行你的代码 - 见证奇迹时刻！
 
-![](./img/config.png)
+### 📦 安装依赖
 
-记得保存更改！现在你可以通过在终端中运行 `npm run create-bld-token` 来使用新添加的命令。这将在开发网络中为你创建和铸造代币。完成后，你应该能在文件夹中看到一个名为 `cache.json` 的文件。打开它，你将看到类似以下的内容。
+```bash
+# 安装TypeScript运行器
+npm install --save-dev ts-node
 
-注意：如果你收到如 `SyntaxError: Cannot use import statement outside a module` 的错误，请检查你的 `tsconfig.json` 文件，并更改或添加 `"module": "CommonJS"`。
+# 确保安装了所有依赖
+npm install
+```
 
-![](./img/config-result.png)
+### ⚙️ 配置脚本
 
-现在，请复制 `mint` 下列出的地址，并将其粘贴到 [`https://explorer.solana.com/?cluster=devnet`](https://explorer.solana.com/?cluster=devnet)。你现在应该能够看到显示你选择图像的代币，就像下图所示。
+在`package.json`的`scripts`部分添加：
 
-![](./img/tokens.png)
+```json
+{
+  "scripts": {
+    "create-bld-token": "ts-node ./src/tokens/bld/index.ts",
+    "check-balance": "ts-node ./src/check-balance.ts"  // 可选：检查余额脚本
+  }
+}
+```
 
-以上就是如何在`Solana`网络上创建和铸造你自己的代币的全部步骤。现在你已经成功地执行了这一过程，可以在`Solana`网络上与你的代币互动了。
+> 💡 **排错提示**: 如果遇到`Cannot use import statement outside a module`错误，检查`tsconfig.json`并设置`"module": "CommonJS"`
+
+### 🎯 执行创建
+
+```bash
+npm run create-bld-token
+```
+
+你应该看到类似这样的输出：
+
+```
+🚀 程序启动!
+==================================================
+💰 钱包余额: 2.5 SOL
+🔨 开始创建代币...
+✅ 代币铸造创建成功!
+🏷️ 代币地址: 7xKXt...
+📸 正在上传代币图片...
+✅ 图片上传成功!
+...
+🎊 交易成功!
+💾 缓存文件已保存!
+==================================================
+🎉 程序执行成功！
+```
+
+## 🔍 验证你的成果
+
+### 📄 检查缓存文件
+
+打开生成的`cache.json`文件，你会看到：
+
+```json
+{
+  "mint": "7xKXtg2...",
+  "imageUri": "https://...",
+  "metadataUri": "https://...",
+  "tokenMetadata": "9yBVt8...",
+  "metadataTransaction": "3xHJ9k...",
+  "createdAt": "2024-01-01T12:00:00.000Z"
+}
+```
+
+### 🌐 在浏览器中查看
+
+1. 复制`mint`地址
+2. 访问 [Solana Explorer](https://explorer.solana.com/?cluster=devnet)
+3. 粘贴地址并搜索
+4. 欣赏你的代币！🎉
+
+## 🎓 知识要点总结
+
+### 🔑 关键概念
+
+| 概念 | 说明 | 重要性 |
+|------|------|--------|
+| **Mint Account** | 代币的"印钞机" | ⭐⭐⭐⭐⭐ |
+| **Metadata** | 代币的描述信息 | ⭐⭐⭐⭐ |
+| **PDA** | 程序派生地址 | ⭐⭐⭐⭐ |
+| **Bundlr** | 去中心化存储 | ⭐⭐⭐ |
+
+### 💡 专业建议
+
+1. **图片选择** 🖼️
+   - 使用PNG或JPG格式
+   - 建议尺寸：512x512像素
+   - 文件大小不超过2MB
+
+2. **代币命名** 🏷️
+   - Symbol限制在10个字符内
+   - Name要有意义且独特
+   - Description要清晰明了
+
+3. **安全考虑** 🔒
+   - 永远不要分享私钥
+   - 使用环境变量存储敏感信息
+   - 在主网部署前充分测试
+
+## 🚧 常见问题解决
+
+### ❌ 余额不足
+```bash
+# 获取测试币
+solana airdrop 2 --url devnet
+```
+
+### ❌ 网络超时
+```typescript
+// 增加超时时间
+bundlrStorage({
+    timeout: 120000  // 120秒
+})
+```
+
+### ❌ 图片上传失败
+- 检查图片路径是否正确
+- 确认图片文件存在
+- 验证文件格式
+
+## 🎊 恭喜你！
+
+你已经成功创建了自己的SPL代币！🎉 这是构建Solana应用的重要一步。
+
+### 🔥 下一步挑战
+
+- 🎨 创建NFT系列
+- 🔄 实现代币质押功能
+- 💱 构建代币交换系统
+- 🎮 集成到游戏中
+
+记住：**每个伟大的DeFi项目都是从一个简单的代币开始的！** 继续探索，继续创造！🚀
+
+---
+
+> 📚 **延伸阅读**:
+> - [Solana代币程序文档](https://spl.solana.com/token)
+> - [Metaplex文档](https://docs.metaplex.com/)
+> - [Candy Machine指南](https://docs.metaplex.com/programs/candy-machine/)
